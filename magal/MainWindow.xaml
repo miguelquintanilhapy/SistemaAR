@@ -1,0 +1,98 @@
+﻿<Window x:Class="magal.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title=" AERO Plataforma - Sistema interno AERO CONCEPTS " 
+        Height="700" Width="1100"
+        WindowStartupLocation="CenterScreen" 
+        Background="#F8FAFC">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="AzulOriginalSide" Color="#0F172A"/>
+        <SolidColorBrush x:Key="CinzaAero" Color="#ACACAC"/>
+        <SolidColorBrush x:Key="AzulHover" Color="#1E293B"/>
+
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource CinzaAero}"/>
+            <Setter Property="Height" Value="Auto"/>
+            <Setter Property="MinHeight" Value="45"/>
+            <Setter Property="Margin" Value="0,2"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderThickness="0" 
+                                CornerRadius="4"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter VerticalAlignment="Center" 
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AzulHover}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+
+                <Trigger Property="Tag" Value="Ativo">
+                    <Setter Property="Background" Value="{StaticResource AzulHover}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0">
+            <Border Background="{StaticResource AzulOriginalSide}"/>
+
+            <DockPanel LastChildFill="False">
+                <StackPanel DockPanel.Dock="Top">
+                    <Image Source="/Imagens/AERO_GROUP CONCEPTS_4.png" 
+                           Height="203" Width="214" 
+                           Stretch="Uniform"
+                           Margin="0,20,0,1"/>
+
+                    <Border BorderBrush="#2D3748" 
+                            BorderThickness="0,1,0,0" 
+                            Margin="0,10,0,1"/>
+
+
+                    <Button x:Name="BtnOrcamentos" Content="Novo Orçamento" 
+                            Style="{StaticResource MenuButtonStyle}" 
+                            Padding="20,0,0,0"
+                            FontWeight="SemiBold"
+                            Click="BtnOrcamentos_Click"/>
+
+                    <Button x:Name="BtnHistorico" Content="Histórico" 
+                            Style="{StaticResource MenuButtonStyle}" 
+                            Padding="20,0,0,0"
+                            FontWeight="SemiBold"
+                            Click="BtnHistorico_Click"/>
+
+                </StackPanel>
+
+                <Border DockPanel.Dock="Bottom" 
+                        BorderBrush="#2D3748" 
+                        BorderThickness="0,1,0,0" 
+                        Padding="0,20">
+                </Border>
+            </DockPanel>
+        </Grid>
+
+        <Grid Grid.Column="1" Margin="15">
+            <ContentControl x:Name="MainContent"/>
+        </Grid>
+    </Grid>
+</Window>

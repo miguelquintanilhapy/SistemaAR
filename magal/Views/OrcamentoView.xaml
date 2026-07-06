@@ -1,0 +1,709 @@
+<UserControl x:Class="magal.Views.OrcamentoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+    d:DesignHeight="900" d:DesignWidth="1200"
+             Background="#F0F4FA">
+
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="AeroPrimary"    Color="#1E3A8A"/>
+        <SolidColorBrush x:Key="AeroAccent"     Color="#3B82F6"/>
+        <SolidColorBrush x:Key="AeroDanger"     Color="#EF4444"/>
+        <SolidColorBrush x:Key="AeroTextDark"   Color="#0F172A"/>
+        <SolidColorBrush x:Key="AeroTextMuted"  Color="#64748B"/>
+        <SolidColorBrush x:Key="AeroTextHint"   Color="#94A3B8"/>
+        <SolidColorBrush x:Key="AeroBorder"     Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="BorderLight"    Color="#E2E8F0"/>
+        <SolidColorBrush x:Key="AeroCardBg"     Color="#F8FAFC"/>
+        <SolidColorBrush x:Key="AeroCardBorder" Color="#E8EEF8"/>
+        <SolidColorBrush x:Key="AeroPillBg"     Color="#EFF6FF"/>
+        <SolidColorBrush x:Key="AeroPillFg"     Color="#1D4ED8"/>
+        <SolidColorBrush x:Key="AzulAero" Color="#131C49"/>
+        <SolidColorBrush x:Key="CinzaAero" Color="#ACACAC"/>
+
+
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background"   Value="{StaticResource AeroPrimary}"/>
+            <Setter Property="Foreground"   Value="White"/>
+            <Setter Property="FontWeight"   Value="Bold"/>
+            <Setter Property="FontSize"     Value="11"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="14,7">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#1e40af"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+
+        <Style x:Key="SecondaryBtn" TargetType="Button">
+            <Setter Property="Background"   Value="{StaticResource AeroTextMuted}"/>
+            <Setter Property="Foreground"   Value="White"/>
+            <Setter Property="FontWeight"   Value="Bold"/>
+            <Setter Property="FontSize"     Value="11"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}"
+                                CornerRadius="8" Padding="14,7">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#475569"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#334155"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
+        <Style x:Key="DiscardBtn" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AeroDanger}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" 
+                        Background="{TemplateBinding Background}" 
+                        CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#DC2626"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#991B1B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="IconDeleteBtn" TargetType="Button">
+            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground"      Value="#CBD5E1"/>
+            <Setter Property="FontWeight"      Value="Bold"/>
+            <Setter Property="FontSize"        Value="14"/>
+            <Setter Property="Cursor"          Value="Hand"/>
+            <Setter Property="Width"           Value="28"/>
+            <Setter Property="Height"          Value="28"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="Transparent" CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#FEE2E2"/>
+                                <Setter Property="Foreground" Value="{StaticResource AeroDanger}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="Padding"          Value="10,8"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="BorderBrush"      Value="{StaticResource AeroBorder}"/>
+            <Setter Property="Background"       Value="White"/>
+            <Setter Property="FontSize"         Value="13"/>
+            <Setter Property="Foreground"       Value="{StaticResource AeroTextDark}"/>
+        </Style>
+
+        <Style x:Key="CleanCombo" TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <Border x:Name="bg" Background="{TemplateBinding Background}" 
+                                    CornerRadius="8" BorderThickness="{TemplateBinding BorderThickness}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}"/>
+                            <ContentPresenter x:Name="ContentSite" 
+                                              IsHitTestVisible="False" 
+                                              Content="{TemplateBinding SelectionBoxItem}" 
+                                              ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" 
+                                              ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" Margin="10,0,30,0" 
+                                              VerticalAlignment="Center"/>
+                            <ToggleButton Background="Transparent" BorderThickness="0" 
+                                          IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <Path Data="M0,0 L4,4 L8,0" Stroke="{StaticResource AeroTextMuted}" 
+                                  StrokeThickness="2" HorizontalAlignment="Right" 
+                                  Margin="0,0,12,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                            <Popup x:Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True">
+                                <Border Background="White" CornerRadius="8" BorderThickness="1" 
+                                        BorderBrush="{StaticResource AeroBorder}" MinWidth="{TemplateBinding ActualWidth}">
+                                    <ItemsPresenter/>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bg" Property="BorderBrush" Value="{StaticResource AeroAccent}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TaskCard" TargetType="Border">
+            <Setter Property="Background"     Value="{StaticResource AeroCardBg}"/>
+            <Setter Property="BorderBrush"    Value="{StaticResource AeroCardBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius"   Value="12"/>
+            <Setter Property="Padding"        Value="16,14"/>
+            <Setter Property="Margin"         Value="0,0,0,10"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="#93C5FD"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CostCard" TargetType="Border" BasedOn="{StaticResource TaskCard}"/>
+    </UserControl.Resources>
+
+    <Grid Margin="32,28">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Height="80" Margin="0,0,0,10">
+            <TextBlock Text="Gestão de Orçamentos" 
+                   FontSize="28" 
+                   FontWeight="Bold" 
+                   Foreground="{StaticResource AzulAero}"
+                   VerticalAlignment="Center"/>
+
+        </Grid>
+
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <Border Background="White" CornerRadius="16" Margin="0,0,0,16"
+                    BorderThickness="1" BorderBrush="{StaticResource AeroBorder}">
+
+                    <StackPanel>
+                        <Grid Margin="20,16">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="{StaticResource AeroPrimary}" CornerRadius="6"
+                        Width="24" Height="24" Margin="0,0,10,0">
+                                    <TextBlock Text="i" Foreground="White" FontSize="14"
+                               FontWeight="Bold" HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+                                </Border>
+                                <TextBlock Text="INFORMAÇÕES GERAIS DO PROJETO" FontSize="12"
+                           FontWeight="Bold" Foreground="{StaticResource AzulAero}"
+                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Height="1" Background="#F1F5F9"/>
+
+                        <Grid Margin="20,20,20,25">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                <TextBlock Text="NOME DO PROJETO" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,-4,0,6" />
+
+                                <Border BorderThickness="1.5" Height="40" Background="Transparent">
+                                    <Border.Style>
+                                        <Style TargetType="{x:Type Border}">
+                                            <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+
+                                    <TextBox Text="{Binding ProjetoAtual.nome, UpdateSourceTrigger=PropertyChanged}" 
+                                        FontWeight="SemiBold" 
+                                        BorderThickness="0" 
+                                        Padding="10,0"
+                                        VerticalContentAlignment="Center"
+                                        Background="Transparent"/>
+                                </Border>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="1" Margin="0,0,15,0">
+                                <TextBlock Text="CLIENTE" 
+               FontSize="12" 
+               FontWeight="Bold" 
+               Foreground="{StaticResource AeroTextDark}" 
+               Margin="0,-4,0,6"/>
+
+                                <ComboBox ItemsSource="{Binding Clientes}" 
+              SelectedItem="{Binding ProjetoAtual.Cliente, Mode=TwoWay}" 
+              DisplayMemberPath="nome" 
+              Height="40"  
+              BorderThickness="0" 
+              FontWeight="SemiBold" 
+              VerticalContentAlignment="Center"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Margin="0,0,15,0">
+                                <TextBlock Text="TIPO" FontSize="12"  FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,-4,0,6"/>
+                                <ComboBox ItemsSource="{Binding OpcoesTipo}" 
+                          SelectedItem="{Binding ProjetoAtual.tipo, Mode=TwoWay}"
+                          Height="40" BorderThickness="0" VerticalContentAlignment="Center" FontWeight="semiBold" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="3">
+                                <TextBlock Text="STATUS" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,-4,0,6"/>
+                                <ComboBox ItemsSource="{Binding OpcoesStatus}" 
+                          SelectedItem="{Binding ProjetoAtual.status, Mode=TwoWay}"
+                          Height="40" VerticalContentAlignment="Center" BorderThickness="0" FontWeight="semiBold"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+
+                <Border Background="White" CornerRadius="16" Margin="0,0,0,16"
+                        BorderThickness="1" BorderBrush="{StaticResource AeroBorder}">
+                    <StackPanel>
+                        <Grid Margin="20,16">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Background="{StaticResource AeroPrimary}" CornerRadius="6"
+                                        Width="24" Height="24" Margin="0,0,10,0">
+                                    <TextBlock Text="1" Foreground="White" FontSize="11"
+                                               FontWeight="Bold" HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+
+                                <TextBlock Text="COMPOSIÇÃO DE MÃO DE OBRA" FontSize="12"
+                                           FontWeight="Bold" Foreground="{StaticResource AzulAero}"
+                                           VerticalAlignment="Center"/>
+                            </StackPanel>
+                            <Button Content="+ ADICIONAR TAREFA"
+                                    Command="{Binding AdicionarTarefaCommand}"
+                                    Width="143.5"
+                                    Style="{StaticResource PrimaryBtn}"
+                                    HorizontalAlignment="Right"/>
+                        </Grid>
+
+                        <Border Height="1" Background="#F1F5F9"/>
+                        <ItemsControl ItemsSource="{Binding ProjetoAtual.Tarefas}" Margin="20,14,20,4">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource TaskCard}" Margin="0,0,0,10" BorderThickness="0">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="80"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="200"/>
+                                                <ColumnDefinition Width="140"/>
+                                                <ColumnDefinition Width="40"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Bottom" Margin="-1,0">
+                                                <TextBlock Text="HORAS" FontSize="12" FontWeight="Bold" 
+                                                    Foreground="{StaticResource AeroTextDark}" Margin="0,0,33,4" 
+                                                    HorizontalAlignment="Center"/>
+
+                                                <Border BorderThickness="1.5" Height="40" Background="Transparent">
+                                                    <Border.Style>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+
+                                                    <TextBox Text="{Binding horas_estimadas, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:0.##}'}" 
+                                                        FontSize="18" 
+                                                        FontWeight="Black" 
+                                                        Foreground="{StaticResource AeroPrimary}"
+                                                        PreviewTextInput="ValidarEntradaSemNegativo" 
+                                                        Background="#F8FAFC" 
+                                                        BorderThickness="0" 
+                                                        HorizontalContentAlignment="Center" 
+                                                        VerticalContentAlignment="Center"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="10,0">
+                                                <TextBlock Text="DESCRIÇÃO DA TAREFA" FontSize="12" FontWeight="Bold" 
+               Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,4"/>
+
+                                                <Border BorderThickness="1.5" Height="40" Background="Transparent">
+                                                    <Border.Style>
+                                                        <Style TargetType="{x:Type Border}">
+                                                            <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+
+                                                    <TextBox Text="{Binding descricao, UpdateSourceTrigger=PropertyChanged}"
+                                                         FontSize="15" 
+                                                         FontWeight="SemiBold" 
+                                                         Foreground="{StaticResource AeroTextDark}"
+                                                         Background="Transparent" 
+                                                         BorderThickness="0" 
+                                                         Padding="8,0" 
+                                                         VerticalContentAlignment="Center"/>    
+                                                </Border>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Margin="10,0">
+                                                <TextBlock Text="RESPONSÁVEL" FontSize="12" FontWeight="Bold" 
+               Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,4"/>
+
+                                                <ComboBox ItemsSource="{Binding DataContext.Funcionarios, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+              SelectedItem="{Binding Funcionario, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}" 
+              DisplayMemberPath="nome" 
+              FontSize="12" 
+              Height="40" 
+              FontWeight="SemiBold" 
+              Cursor="Hand" 
+              VerticalContentAlignment="Center" 
+              BorderThickness="0" 
+              BorderBrush="{StaticResource AeroBorder}" 
+              Background="#F8FAFC"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="3" VerticalAlignment="Bottom" Margin="10,0,10,0">
+                                                <TextBlock Text="SUBTOTAL" FontSize="12" FontWeight="Bold" 
+                   Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,4" HorizontalAlignment="Right"/>
+                                                <Border Height="40" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding custo_real, StringFormat=C}" 
+                       FontSize="16" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" 
+                       VerticalAlignment="Center" HorizontalAlignment="Right"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <Button Grid.Column="4" Content="✕" 
+                                                Command="{Binding DataContext.DeletarTarefaCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                CommandParameter="{Binding}"
+                                                Style="{StaticResource IconDeleteBtn}" 
+                                                VerticalAlignment="Bottom" Height="40" Margin="0,0,0,0"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <Border Background="#F8FAFC" BorderThickness="0,1,0,0" BorderBrush="#F1F5F9" CornerRadius="0,0,16,16" Padding="20,12">
+                            <TextBlock Text="{Binding ProjetoAtual.Tarefas.Count, StringFormat='{}{0} tarefas ativas'}" FontSize="12" Foreground="{StaticResource AeroTextHint}" VerticalAlignment="Center"/>
+                        </Border>
+
+                        <Border Background="White" CornerRadius="16" Margin="0,8,0,8" BorderThickness="1" BorderBrush="{StaticResource AeroBorder}">
+                            <StackPanel>
+                                <Grid Margin="20,16">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Border Background="{StaticResource AeroPrimary}" CornerRadius="6" Width="24" Height="24" Margin="0,0,10,0">
+                                            <TextBlock Text="2" Foreground="White" FontSize="11" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="EQUIPAMENTOS E INSUMOS" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AzulAero}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                    <Button Content="+ ADICIONAR CUSTO" Command="{Binding AdicionarCustoCommand}" Style="{StaticResource PrimaryBtn}" Width="143.5" HorizontalAlignment="Right"/>
+                                </Grid>
+
+                                <Border Height="1" Background="#F1F5F9"/>
+
+                                <ItemsControl ItemsSource="{Binding CustosExtras}" Margin="20,14,20,14">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{StaticResource CostCard}" Margin="0,0,0,10" BorderThickness="0">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="220"/>
+                                                        <ColumnDefinition Width="140"/>
+                                                        <ColumnDefinition Width="40"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0" VerticalAlignment="Bottom" Margin="0,0,15,0">
+                                                        <TextBlock Text="ITEM DE CUSTO" 
+               FontSize="12" 
+               FontWeight="Bold" 
+               Foreground="{StaticResource AeroTextDark}" 
+               Margin="0,0,0,4"/>
+                                                        <ComboBox ItemsSource="{Binding ItensFiltrados}" 
+          SelectedItem="{Binding ItemSelecionado, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+          DisplayMemberPath="nome" 
+          FontSize="14"  
+          Height="40"  
+          FontWeight="SemiBold" 
+          Validation.ErrorTemplate="{x:Null}" 
+          VerticalContentAlignment="Center" 
+          Cursor="Hand"  
+          BorderThickness="0.4"  
+          BorderBrush="{StaticResource AeroBorder}" 
+          Background="#F8FAFC"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="1" VerticalAlignment="Bottom" Margin="10,0">
+                                                        <TextBlock Text="CATEGORIA" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,4"/>
+                                                        <ComboBox ItemsSource="{Binding DataContext.CategoriasCustos, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                  SelectedItem="{Binding categoria, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                                  FontSize="12" 
+                                                                  Height="40"
+                                                                 
+                                                                  FontWeight="SemiBold"
+                                                                  VerticalContentAlignment="Center"
+                                                                  Cursor="Hand" 
+                                                                  BorderThickness="0" 
+                                                                  BorderBrush="{StaticResource AeroBorder}" 
+                                                                  Background="#F8FAFC"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="2" VerticalAlignment="Bottom" Margin="10,0">
+                                                        <TextBlock Text="VALOR (R$)" 
+                                                                 FontSize="12" 
+                                                                 FontWeight="Bold" 
+                                                                 Foreground="{StaticResource AeroTextDark}" 
+                                                                 HorizontalAlignment="Right" 
+                                                                 Margin="0,0,0,4"/>
+
+                                                        <Border BorderThickness="1.5" Height="40" Background="Transparent">
+                                                            <Border.Style>
+                                                                <Style TargetType="{x:Type Border}">
+                                                                    <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                                                                    <Style.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                                                        </Trigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </Border.Style>
+
+                                                            <TextBox Text="{Binding valor, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:N2}'}"
+                                                                 FontSize="15" 
+                                                                 FontWeight="Bold" 
+                                                                 Foreground="{StaticResource AeroTextDark}"
+                                                                 Background="Transparent" 
+                                                                 BorderThickness="0" 
+                                                                 HorizontalContentAlignment="Right" 
+                                                                 VerticalContentAlignment="Center" 
+                                                                 Padding="8,0"
+                                                                 PreviewTextInput="ValidarEntradaSemNegativo"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <Button Grid.Column="3" Content="✕"
+                                                            Command="{Binding DataContext.DeletarCustoCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource IconDeleteBtn}"
+                                                            VerticalAlignment="Bottom" 
+                                                            Height="40" 
+                                                            HorizontalAlignment="Right"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#F8FAFC" BorderThickness="0,1,0,0" BorderBrush="#F1F5F9" CornerRadius="0,0,16,16" Padding="20,12">
+                            <TextBlock Text="{Binding CustosExtras.Count, StringFormat='{}{0} itens de custo'}"
+                                       FontSize="12" Foreground="{StaticResource AeroTextHint}" VerticalAlignment="Center"/>
+                        </Border>
+                    </StackPanel>
+                </Border>
+
+               
+            </StackPanel>
+        </ScrollViewer>
+
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Background="#F8FAFC" BorderBrush="{StaticResource AeroBorder}" BorderThickness="1" CornerRadius="12" Padding="12,10" VerticalAlignment="Bottom">
+                <StackPanel Orientation="Horizontal">
+                    <StackPanel VerticalAlignment="Center" Margin="5,0,15,0">
+                        <TextBlock Text="AJUSTES DE" FontSize="11" FontWeight="Black" Foreground="{StaticResource AeroPrimary}"/>
+                        <TextBlock Text="PROPOSTA" FontSize="11" FontWeight="Black" Foreground="{StaticResource AeroPrimary}"/>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,10,0">
+                        <TextBlock Text="LUCRO" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,3" />
+
+                        <Border BorderThickness="1.3" Height="48" Background="Transparent">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <Grid>
+                                <TextBox Text="{Binding ProjetoAtual.Orcamento.margem_percentual, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:0.##}'}"
+                     PreviewTextInput="ValidarEntradaSemNegativo"
+                     FontWeight="Bold" FontSize="15" Padding="15,0,35,0" MinWidth="100"
+                     VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent">
+                                    <TextBox.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+                                    </TextBox.Resources>
+                                </TextBox>
+                                <TextBlock Text="%" Foreground="{StaticResource AeroTextDark}" VerticalAlignment="Center" HorizontalAlignment="Right" 
+                       FontWeight="Bold" FontSize="15" Margin="0,0,15,0" IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Margin="0,0,10,0">
+                        <TextBlock Text="IMPOSTOS" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,3" />
+
+                        <Border BorderThickness="1.3" Height="48" Background="Transparent">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <Grid>
+                                <TextBox Text="{Binding ProjetoAtual.Orcamento.percentual_impostos, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:0.##}'}"
+                     PreviewTextInput="ValidarEntradaSemNegativo"
+                     FontWeight="Bold" FontSize="15" Padding="15,0,35,0" MinWidth="100"
+                     VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent">
+                                    <TextBox.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+                                    </TextBox.Resources>
+                                </TextBox>
+                                <TextBlock Text="%" Foreground="{StaticResource AeroTextDark}" VerticalAlignment="Center" HorizontalAlignment="Right" 
+                       FontWeight="Bold" FontSize="15" Margin="0,0,15,0" IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel>
+                        <TextBlock Text="VALIDADE" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,3" />
+
+                        <Border BorderThickness="1.3" Height="48" Background="Transparent">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+
+                            <Grid>
+                                <TextBox Text="{Binding ProjetoAtual.Orcamento.validade_dias, UpdateSourceTrigger=PropertyChanged}"
+                     PreviewTextInput="ValidarEntradaSemNegativo"
+                     FontWeight="Bold" FontSize="15" Padding="15,0,45,0" MinWidth="110"
+                     VerticalContentAlignment="Center" BorderThickness="0" Background="Transparent">
+                                    <TextBox.Resources>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="Transparent"/>
+                                        <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="Transparent"/>
+                                    </TextBox.Resources>
+                                </TextBox>
+                                <TextBlock Text="dias" Foreground="{StaticResource AeroTextDark}" VerticalAlignment="Center" HorizontalAlignment="Right" 
+                       FontWeight="Bold" FontSize="13" Margin="0,0,25,0" IsHitTestVisible="False"/>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                <StackPanel VerticalAlignment="Center" Margin="0,0,28,0">
+                    <TextBlock Text="TOTAL DA PROPOSTA" FontSize="10" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" HorizontalAlignment="Right" Margin="0,0,0,2"/>
+                    <TextBlock Text="{Binding ProjetoAtual.Orcamento.valor_final, StringFormat=C}" FontSize="36" FontWeight="Black" Foreground="{StaticResource AeroPrimary}" HorizontalAlignment="Right"/>
+                </StackPanel>
+
+                <Button Content="DESCARTAR ALTERAÇÕES" Command="{Binding DescartarCommand}" Visibility="{Binding VisibilidadeBotaoDescartar}" Style="{StaticResource DiscardBtn}" Width="240" Height="54" Margin="0,0,12,0"/>
+
+                <Button Content="FINALIZAR PROPOSTA"
+                        Command="{Binding GerarPdfCommand}"
+                        IsEnabled="{Binding BotaoAtivo}"
+                        Style="{StaticResource PrimaryBtn}"
+                        Width="240" Height="54" FontSize="14"/>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="LoadingOverlay"
+      Background="#CCFFFFFF" 
+      Visibility="Visible" 
+      Grid.Row="0"
+      Grid.RowSpan="99"
+      Grid.Column="0"
+      Grid.ColumnSpan="99"
+      Panel.ZIndex="99999">
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                <ProgressBar IsIndeterminate="True" 
+                     Width="200" 
+                     Height="6" 
+                     Foreground="{StaticResource AzulAero}" 
+                     Background="#E2E8F0" 
+                     BorderThickness="0"/>
+                <TextBlock Text="Carregando..." 
+                   Margin="0,12,0,0" 
+                   FontSize="13" 
+                   FontWeight="SemiBold"
+                   Foreground="{StaticResource AzulAero}" 
+                   HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+
+    </Grid>
+</UserControl>
