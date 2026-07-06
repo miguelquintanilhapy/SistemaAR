@@ -1,9 +1,9 @@
 ﻿<Window x:Class="magal.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title=" AERO Plataforma - Sistema interno AERO CONCEPTS " 
+        Title="Ice Car - Orçamentos"
         Height="700" Width="1100"
-        WindowStartupLocation="CenterScreen" 
+        WindowStartupLocation="CenterScreen"
         Background="#F8FAFC">
 
     <Window.Resources>
@@ -59,13 +59,21 @@
 
             <DockPanel LastChildFill="False">
                 <StackPanel DockPanel.Dock="Top">
-                    <Image Source="/Imagens/AERO_GROUP CONCEPTS_4.png" 
-                           Height="203" Width="214" 
-                           Stretch="Uniform"
-                           Margin="0,20,0,1"/>
+                    <TextBlock Text="ICE CAR"
+                               Foreground="White"
+                               FontSize="24"
+                               FontWeight="Black"
+                               HorizontalAlignment="Center"
+                               Margin="0,32,0,4"/>
+                    <TextBlock Text="AR CONDICIONADO AUTOMOTIVO"
+                               Foreground="{StaticResource CinzaAero}"
+                               FontSize="9"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,20"/>
 
-                    <Border BorderBrush="#2D3748" 
-                            BorderThickness="0,1,0,0" 
+                    <Border BorderBrush="#2D3748"
+                            BorderThickness="0,1,0,0"
                             Margin="0,10,0,1"/>
 
 
