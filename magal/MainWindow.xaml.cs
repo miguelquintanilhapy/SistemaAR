@@ -1,20 +1,13 @@
-﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using magal.Data.Repositories;
 using magal.Models;
-using magal.ViewModels;
 using magal.Views;
 
 namespace magal
 {
     public partial class MainWindow : Window
     {
-        private HistoricoView _historicoView;
-        private OrcamentoView _orcamentoView;
-
-
         public MainWindow()
         {
             InitializeComponent();
@@ -22,72 +15,39 @@ namespace magal
             AbrirOrcamento();
         }
 
-       
-
-        // --- NAVEGAÇÃO ---
         private void BtnOrcamentos_Click(object sender, RoutedEventArgs e) => AbrirOrcamento();
         private void BtnHistorico_Click(object sender, RoutedEventArgs e) => AbrirHistorico();
 
         private void AtualizarBotaoAtivo(Button botaoAtivo)
         {
-            // Lista com todos os seus botões da sidebar
-            var botoes = new[] { BtnOrcamentos, BtnHistorico, };
+            var botoes = new[] { BtnOrcamentos, BtnHistorico };
 
             foreach (var btn in botoes)
             {
                 if (btn == null) continue;
-
-                if (btn == botaoAtivo)
-                {
-                    // Define uma Tag que avisa ao XAML para fixar o estilo ativo
-                    btn.Tag = "Ativo";
-                }
-                else
-                {
-                    btn.Tag = null;
-                }
+                btn.Tag = btn == botaoAtivo ? "Ativo" : null;
             }
         }
 
-      
-
         public void AbrirOrcamento()
         {
-            _orcamentoView = new OrcamentoView();
-            MainContent.Content = _orcamentoView;
-            AtualizarBotaoAtivo(BtnOrcamentos); 
+            MainContent.Content = new OrcamentoView();
+            AtualizarBotaoAtivo(BtnOrcamentos);
         }
 
         public void AbrirHistorico()
         {
-            if (_historicoView == null) _historicoView = new HistoricoView();
-            MainContent.Content = _historicoView;
+            MainContent.Content = new HistoricoView();
             AtualizarBotaoAtivo(BtnHistorico);
         }
 
-       
-
-
-
-        public async void IrParaEdicao(Projeto projetoSimplificado)
+        /// <summary>
+        /// Reabre um orçamento salvo (vindo do histórico) na tela de orçamento para visualização/edição.
+        /// </summary>
+        public void AbrirOrcamentoParaEdicao(Orcamento orcamento, List<ItemOrcamento> itens)
         {
-            var repo = new ProjetoRepository();
-            Projeto projetoCompleto = await repo.CarregarProjetoCompleto(projetoSimplificado.id_projeto);
-
-            var viewModel = new OrcamentoViewModel();
-            viewModel.CarregarProjetoParaEdicao(projetoCompleto);
-
-            var view = new OrcamentoView();
-            view.DataContext = viewModel;
-            MainContent.Content = view;
-
-            AtualizarBotaoAtivo(BtnOrcamentos); 
+            MainContent.Content = new OrcamentoView(orcamento, itens);
+            AtualizarBotaoAtivo(BtnOrcamentos);
         }
-
-       
-
-     
-
-        public ContentControl MainContentControl => MainContent;
     }
 }
