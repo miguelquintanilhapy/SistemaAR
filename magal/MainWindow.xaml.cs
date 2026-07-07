@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿using System.Collections.Generic;
+=======
+using System.Collections.Generic;
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
 using System.Windows;
 using System.Windows.Controls;
 using magal.Models;

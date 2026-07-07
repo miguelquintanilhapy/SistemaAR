@@ -1,8 +1,12 @@
 using System.Collections.Generic;
+<<<<<<< HEAD
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+=======
+using System.Windows.Controls;
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
 using magal.Models;
 using magal.ViewModels;
 
@@ -26,6 +30,7 @@ namespace magal.Views
             vm.CarregarParaEdicao(orcamentoParaEditar, itens);
             this.DataContext = vm;
         }
+<<<<<<< HEAD
 
         private void ValidarEntradaSemNegativo(object sender, TextCompositionEventArgs e)
         {
@@ -41,5 +46,7 @@ namespace magal.Views
                 e.Handled = true;
             }
         }
+=======
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
     }
 }

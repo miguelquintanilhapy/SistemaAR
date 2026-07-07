@@ -1,7 +1,10 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+<<<<<<< HEAD
 using System.Globalization;
+=======
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,12 +15,18 @@ using magal.Data.Repositories;
 namespace magal.ViewModels
 {
     /// <summary>
+<<<<<<< HEAD
     /// ViewModel responsável pela tela de histórico: listagem, busca por cliente/placa,
     /// indicadores rápidos e reabertura de orçamentos já salvos.
+=======
+    /// ViewModel responsável pela tela de histórico: listagem, busca por cliente/placa
+    /// e reabertura de orçamentos já salvos.
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
     /// </summary>
     public class HistoricoViewModel : BaseModel
     {
         private readonly OrcamentoRepository _repository = new OrcamentoRepository();
+<<<<<<< HEAD
         private static readonly CultureInfo _ptBR = new CultureInfo("pt-BR");
 
         private string _filtroTexto;
@@ -25,6 +34,10 @@ namespace magal.ViewModels
         private int _quantidadeOrcamentos;
         private string _valorTotal = "R$ 0,00";
         private string _ticketMedio = "R$ 0,00";
+=======
+        private string _filtroTexto;
+        private bool _isLoading;
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
 
         public bool IsLoading
         {
@@ -40,6 +53,7 @@ namespace magal.ViewModels
                 _filtroTexto = value;
                 OnPropertyChanged();
                 OrcamentosView.Refresh();
+<<<<<<< HEAD
                 AtualizarIndicadores();
             }
         }
@@ -65,6 +79,14 @@ namespace magal.ViewModels
         public ObservableCollection<Orcamento> Orcamentos { get; } = new ObservableCollection<Orcamento>();
         public ICollectionView OrcamentosView { get; }
 
+=======
+            }
+        }
+
+        public ObservableCollection<Orcamento> Orcamentos { get; } = new ObservableCollection<Orcamento>();
+        public ICollectionView OrcamentosView { get; }
+
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
         public RelayCommand ReabrirCommand { get; }
         public RelayCommand AtualizarCommand { get; }
 
@@ -83,6 +105,7 @@ namespace magal.ViewModels
             {
                 IsLoading = true;
 
+<<<<<<< HEAD
                 _filtroTexto = string.Empty;
                 OnPropertyChanged(nameof(FiltroTexto));
 
@@ -92,6 +115,12 @@ namespace magal.ViewModels
                 foreach (var o in lista) Orcamentos.Add(o);
 
                 AtualizarIndicadores();
+=======
+                var lista = await _repository.ObterTodosParaHistoricoAsync();
+
+                Orcamentos.Clear();
+                foreach (var o in lista) Orcamentos.Add(o);
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
             }
             catch (Exception ex)
             {
@@ -114,6 +143,7 @@ namespace magal.ViewModels
                    (orcamento.VeiculoPlaca?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false);
         }
 
+<<<<<<< HEAD
         private void AtualizarIndicadores()
         {
             var visiveis = OrcamentosView.Cast<Orcamento>().ToList();
@@ -129,6 +159,10 @@ namespace magal.ViewModels
 
         private async void ExecutarReabertura(Orcamento orcamento)
         {
+=======
+        private async void ExecutarReabertura(Orcamento orcamento)
+        {
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
             if (orcamento == null) return;
 
             try

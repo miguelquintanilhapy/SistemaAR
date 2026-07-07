@@ -4,10 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-    d:DesignHeight="900" d:DesignWidth="1200"
+             d:DesignHeight="900" d:DesignWidth="1200"
              Background="#F0F4FA">
 
     <UserControl.Resources>
+<<<<<<< HEAD
         <SolidColorBrush x:Key="AeroPrimary"    Color="#1E3A8A"/>
         <SolidColorBrush x:Key="AeroAccent"     Color="#3B82F6"/>
         <SolidColorBrush x:Key="AeroDanger"     Color="#EF4444"/>
@@ -31,17 +32,39 @@
             <Setter Property="FontWeight"   Value="Bold"/>
             <Setter Property="FontSize"     Value="11"/>
             <Setter Property="Cursor"       Value="Hand"/>
+=======
+        <SolidColorBrush x:Key="Primary" Color="#14607D"/>
+        <SolidColorBrush x:Key="Danger" Color="#EF4444"/>
+        <SolidColorBrush x:Key="TextDark" Color="#0F172A"/>
+        <SolidColorBrush x:Key="TextMuted" Color="#64748B"/>
+        <SolidColorBrush x:Key="Border" Color="#E2E8F0"/>
+
+        <Style x:Key="PrimaryBtn" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource Primary}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
+<<<<<<< HEAD
                         <Border x:Name="Bd" Background="{TemplateBinding Background}"
                                 CornerRadius="8" Padding="14,7">
+=======
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" CornerRadius="8" Padding="16,10">
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
+<<<<<<< HEAD
                                 <Setter TargetName="Bd" Property="Background" Value="#1e40af"/>
+=======
+                                <Setter TargetName="Bd" Property="Background" Value="#0F4A61"/>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="Bd" Property="Background" Value="#94A3B8"/>
@@ -53,32 +76,15 @@
         </Style>
 
         <Style x:Key="IconDeleteBtn" TargetType="Button">
-            <Setter Property="Background"      Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource Danger}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Foreground"      Value="#CBD5E1"/>
-            <Setter Property="FontWeight"      Value="Bold"/>
-            <Setter Property="FontSize"        Value="14"/>
-            <Setter Property="Cursor"          Value="Hand"/>
-            <Setter Property="Width"           Value="28"/>
-            <Setter Property="Height"          Value="28"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border x:Name="Bd" Background="Transparent" CornerRadius="6">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="Bd" Property="Background" Value="#FEE2E2"/>
-                                <Setter Property="Foreground" Value="{StaticResource AeroDanger}"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
 
         <Style TargetType="TextBox">
+<<<<<<< HEAD
             <Setter Property="Padding"          Value="10,8"/>
             <Setter Property="BorderThickness"  Value="1"/>
             <Setter Property="BorderBrush"      Value="{StaticResource AeroBorder}"/>
@@ -90,17 +96,26 @@
         <Style x:Key="TaskCard" TargetType="Border">
             <Setter Property="Background"     Value="{StaticResource AeroCardBg}"/>
             <Setter Property="BorderBrush"    Value="{StaticResource AeroCardBorder}"/>
+=======
+            <Setter Property="Padding" Value="10,8"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius"   Value="12"/>
-            <Setter Property="Padding"        Value="16,14"/>
-            <Setter Property="Margin"         Value="0,0,0,10"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="BorderBrush" Value="#93C5FD"/>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
         </Style>
 
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="16"/>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="Padding" Value="20"/>
+        </Style>
+
+<<<<<<< HEAD
         <Style x:Key="HoverFieldBorder" TargetType="Border">
             <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
             <Style.Triggers>
@@ -108,6 +123,20 @@
                     <Setter Property="BorderBrush" Value="{DynamicResource {x:Static SystemColors.ControlDarkBrushKey}}"/>
                 </Trigger>
             </Style.Triggers>
+=======
+        <Style x:Key="SectionTitle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource Primary}"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+        </Style>
+
+        <Style x:Key="FieldLabel" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextDark}"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
         </Style>
     </UserControl.Resources>
 
@@ -118,6 +147,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+<<<<<<< HEAD
         <Grid Grid.Row="0" Height="80" Margin="0,0,0,10">
             <TextBlock Text="Orçamento"
                    FontSize="28"
@@ -132,8 +162,16 @@
                 <!-- CLIENTE E VEÍCULO -->
                 <Border Background="White" CornerRadius="16" Margin="0,0,0,16"
                     BorderThickness="1" BorderBrush="{StaticResource AeroBorder}">
+=======
+        <TextBlock Grid.Row="0" Text="Orçamento" FontSize="28" FontWeight="Bold" Foreground="{StaticResource Primary}" Margin="0,0,0,20"/>
 
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
+
+                <Border Style="{StaticResource CardStyle}">
                     <StackPanel>
+<<<<<<< HEAD
                         <Grid Margin="20,16">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                 <Border Background="{StaticResource AeroPrimary}" CornerRadius="6"
@@ -208,8 +246,28 @@
                                         FontWeight="SemiBold" BorderThickness="0" Padding="10,0"
                                         VerticalContentAlignment="Center" Background="Transparent"/>
                                 </Border>
+=======
+                        <TextBlock Text="DADOS DO CLIENTE" Style="{StaticResource SectionTitle}"/>
+                        <Grid Margin="0,0,0,18">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="NOME" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.ClienteNome, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
 
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="TELEFONE" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.ClienteTelefone, UpdateSourceTrigger=PropertyChanged}"/>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
+                            </StackPanel>
+                        </Grid>
+
+<<<<<<< HEAD
                             <StackPanel Grid.Column="2" Margin="0,0,15,0">
                                 <TextBlock Text="PLACA" FontSize="12" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" Margin="0,0,0,6"/>
                                 <Border BorderThickness="1.5" Height="40" Background="Transparent" Style="{StaticResource HoverFieldBorder}">
@@ -237,24 +295,57 @@
                                         VerticalContentAlignment="Center" Background="Transparent"
                                         PreviewTextInput="ValidarEntradaSemNegativo"/>
                                 </Border>
+=======
+                        <TextBlock Text="DADOS DO VEÍCULO" Style="{StaticResource SectionTitle}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="12"/>
+                                <ColumnDefinition Width="0.7*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="MARCA" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.VeiculoMarca, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="MODELO" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.VeiculoModelo, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4">
+                                <TextBlock Text="PLACA" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.VeiculoPlaca, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="6">
+                                <TextBlock Text="COR" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.VeiculoCor, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="8">
+                                <TextBlock Text="ANO" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.VeiculoAno, UpdateSourceTrigger=PropertyChanged}"/>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
                             </StackPanel>
                         </Grid>
                     </StackPanel>
                 </Border>
 
+<<<<<<< HEAD
                 <!-- PEÇAS E SERVIÇOS -->
                 <Border Background="White" CornerRadius="16" Margin="0,0,0,16"
                         BorderThickness="1" BorderBrush="{StaticResource AeroBorder}">
+=======
+                <Border Style="{StaticResource CardStyle}">
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
                     <StackPanel>
-                        <Grid Margin="20,16">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Border Background="{StaticResource AeroPrimary}" CornerRadius="6"
-                                        Width="24" Height="24" Margin="0,0,10,0">
-                                    <TextBlock Text="1" Foreground="White" FontSize="11"
-                                               FontWeight="Bold" HorizontalAlignment="Center"
-                                               VerticalAlignment="Center"/>
-                                </Border>
+                        <TextBlock Text="PEÇAS E SERVIÇOS" Style="{StaticResource SectionTitle}"/>
 
+<<<<<<< HEAD
                                 <TextBlock Text="PEÇAS E SERVIÇOS" FontSize="12"
                                            FontWeight="Bold" Foreground="{StaticResource AzulAero}"
                                            VerticalAlignment="Center"/>
@@ -382,15 +473,103 @@
                     </StackPanel>
                 </Border>
 
+=======
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="170"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="DESCRIÇÃO" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding NovaDescricaoItem, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="VALOR (R$)" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding NovoValorItem, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:0.00}'}"/>
+                            </StackPanel>
+
+                            <Button Grid.Column="4" Content="+ ADICIONAR ITEM"
+                                    Command="{Binding AdicionarItemCommand}"
+                                    Style="{StaticResource PrimaryBtn}"
+                                    VerticalAlignment="Bottom" Height="38" HorizontalAlignment="Stretch"/>
+                        </Grid>
+
+                        <DataGrid ItemsSource="{Binding ItensOrcamento}"
+                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                  CanUserAddRows="False" CanUserDeleteRows="False"
+                                  CanUserResizeColumns="False" CanUserReorderColumns="False"
+                                  HeadersVisibility="Column" GridLinesVisibility="Horizontal"
+                                  HorizontalGridLinesBrush="{StaticResource Border}"
+                                  Background="Transparent" BorderThickness="0"
+                                  RowHeight="46" FontSize="13">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="DESCRIÇÃO" Binding="{Binding Descricao}" Width="*" FontWeight="SemiBold"/>
+                                <DataGridTextColumn Header="VALOR" Binding="{Binding ValorUnitario, StringFormat=C}" Width="160">
+                                    <DataGridTextColumn.ElementStyle>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="HorizontalAlignment" Value="Right"/>
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Margin" Value="0,0,20,0"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </Style>
+                                    </DataGridTextColumn.ElementStyle>
+                                </DataGridTextColumn>
+                                <DataGridTemplateColumn Header="" Width="60">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="✕"
+                                                    Command="{Binding DataContext.DeletarItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                    CommandParameter="{Binding}"
+                                                    Style="{StaticResource IconDeleteBtn}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock Text="GARANTIA E OBSERVAÇÕES" Style="{StaticResource SectionTitle}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="GARANTIA (DIAS)" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.GarantiaDias, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="OBSERVAÇÕES" Style="{StaticResource FieldLabel}"/>
+                                <TextBox Text="{Binding OrcamentoAtual.Observacoes, UpdateSourceTrigger=PropertyChanged}"
+                                         AcceptsReturn="True" TextWrapping="Wrap" Height="70"
+                                         VerticalScrollBarVisibility="Auto"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
             </StackPanel>
         </ScrollViewer>
 
-        <Grid Grid.Row="2" Margin="0,20,0,0">
+        <Grid Grid.Row="2" Margin="0,16,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
+<<<<<<< HEAD
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
                 <StackPanel VerticalAlignment="Center" Margin="0,0,28,0">
                     <TextBlock Text="TOTAL DO ORÇAMENTO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource AeroTextDark}" HorizontalAlignment="Right" Margin="0,0,0,2"/>
@@ -429,5 +608,26 @@
             </StackPanel>
         </Grid>
 
+=======
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock Text="TOTAL DO ORÇAMENTO" FontSize="11" FontWeight="Bold" Foreground="{StaticResource TextMuted}"/>
+                <TextBlock Text="{Binding OrcamentoAtual.ValorTotal, StringFormat=C}" FontSize="32" FontWeight="Black" Foreground="{StaticResource Primary}"/>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="SALVAR ORÇAMENTO"
+                        Command="{Binding SalvarOrcamentoCommand}"
+                        IsEnabled="{Binding BotaoAtivo}"
+                        Style="{StaticResource PrimaryBtn}"
+                        Width="200" Height="50" Margin="0,0,12,0"/>
+
+                <Button Content="GERAR PDF"
+                        Command="{Binding GerarPdfCommand}"
+                        IsEnabled="{Binding BotaoAtivo}"
+                        Style="{StaticResource PrimaryBtn}"
+                        Width="160" Height="50"/>
+            </StackPanel>
+        </Grid>
+>>>>>>> 4754a8fb0525ce9a449f316ecec94f294eb0475b
     </Grid>
 </UserControl>
