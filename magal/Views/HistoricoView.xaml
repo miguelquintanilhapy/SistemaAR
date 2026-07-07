@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             mc:Ignorable="d" 
+             mc:Ignorable="d"
              Language="pt-BR"
              d:DesignHeight="900" d:DesignWidth="1200"
              Background="#F0F4FA">
@@ -44,6 +44,15 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style x:Key="LinkBtn" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource AeroAccent}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
     </UserControl.Resources>
 
     <Grid Margin="32,28">
@@ -55,7 +64,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Height="80" Margin="0,0,0,10">
-            <TextBlock Text="Histórico de Projetos" 
+            <TextBlock Text="Histórico de Orçamentos"
                        FontSize="28" FontWeight="Bold"
                        Foreground="{StaticResource AzulAero}"
                        VerticalAlignment="Center"/>
@@ -64,26 +73,12 @@
                 <Button Command="{Binding AtualizarCommand}"
                         Style="{StaticResource PrimaryBtn}">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE72C;" 
-                                   FontFamily="Segoe MDL2 Assets" 
-                                   FontSize="12" 
-                                   VerticalAlignment="Center" 
+                        <TextBlock Text="&#xE72C;"
+                                   FontFamily="Segoe MDL2 Assets"
+                                   FontSize="12"
+                                   VerticalAlignment="Center"
                                    Margin="0,0,8,0"/>
-                        <TextBlock Text="ATUALIZAR LISTA" 
-                                   VerticalAlignment="Center"/>
-                    </StackPanel>
-                </Button>
-
-                <Button Command="{Binding ExportarPdfCommand}"
-                        Style="{StaticResource PrimaryBtn}"
-                        Margin="10,0,0,0">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="&#xE72D;" 
-                                   FontFamily="Segoe MDL2 Assets" 
-                                   FontSize="12" 
-                                   VerticalAlignment="Center" 
-                                   Margin="0,0,8,0"/>
-                        <TextBlock Text="EXPORTAR RELATÓRIO" 
+                        <TextBlock Text="ATUALIZAR LISTA"
                                    VerticalAlignment="Center"/>
                     </StackPanel>
                 </Button>
@@ -94,29 +89,29 @@
             <Border Background="White" CornerRadius="12" Margin="0,0,10,0" Padding="20,15"
                     BorderThickness="1" BorderBrush="{StaticResource AeroBorder}">
                 <StackPanel>
-                    <TextBlock Text="PROJETOS TOTAIS" FontSize="10" FontWeight="Bold" Foreground="{StaticResource AeroTextHint}" Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding QuantidadeProjetos}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AzulAero}"/>
+                    <TextBlock Text="ORÇAMENTOS LISTADOS" FontSize="10" FontWeight="Bold" Foreground="{StaticResource AeroTextHint}" Margin="0,0,0,5"/>
+                    <TextBlock Text="{Binding QuantidadeOrcamentos}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource AzulAero}"/>
                 </StackPanel>
             </Border>
 
             <Border Background="{StaticResource AzulAero}" CornerRadius="12" Margin="5,0" Padding="20,15">
                 <StackPanel>
-                    <TextBlock Text="VALOR TOTAL DAS PROPOSTAS" FontSize="10" FontWeight="Bold" Foreground="#93C5FD" Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding TotalFinanceiro}" FontSize="24" FontWeight="Bold" Foreground="White"/>
+                    <TextBlock Text="VALOR TOTAL" FontSize="10" FontWeight="Bold" Foreground="#93C5FD" Margin="0,0,0,5"/>
+                    <TextBlock Text="{Binding ValorTotal}" FontSize="24" FontWeight="Bold" Foreground="White"/>
                 </StackPanel>
             </Border>
 
             <Border Background="White" CornerRadius="12" Margin="10,0,0,0" Padding="20,15"
                     BorderThickness="1" BorderBrush="{StaticResource AeroBorder}">
                 <StackPanel>
-                    <TextBlock Text="LUCRO TOTAL ESTIMADO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource AeroTextHint}" Margin="0,0,0,5"/>
-                    <TextBlock Text="{Binding TotalLucro}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource VerdeAero}"/>
+                    <TextBlock Text="TICKET MÉDIO" FontSize="10" FontWeight="Bold" Foreground="{StaticResource AeroTextHint}" Margin="0,0,0,5"/>
+                    <TextBlock Text="{Binding TicketMedio}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource VerdeAero}"/>
                 </StackPanel>
             </Border>
         </UniformGrid>
 
         <StackPanel Grid.Row="2" Margin="0,0,0,15">
-            <TextBlock Text="FILTRE POR ( PROJETO, CLIENTE, TIPO OU STATUS )" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AzulAero}" Margin="0,0,0,4"/>
+            <TextBlock Text="FILTRE POR ( CLIENTE OU PLACA )" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AzulAero}" Margin="0,0,0,4"/>
 
             <Border BorderThickness="1.5" Height="42" Background="White">
                 <Border.Style>
@@ -132,10 +127,10 @@
 
                 <Grid>
                     <TextBox Text="{Binding FiltroTexto, UpdateSourceTrigger=PropertyChanged}"
-                             VerticalContentAlignment="Center" 
+                             VerticalContentAlignment="Center"
                              Padding="12,0,40,0"
-                             FontSize="14" 
-                             Background="Transparent" 
+                             FontSize="14"
+                             Background="Transparent"
                              BorderThickness="0"/>
 
                     <TextBlock Text="🔍" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,15,0" Foreground="{StaticResource AeroTextHint}" IsHitTestVisible="False"/>
@@ -151,8 +146,7 @@
                 </Grid.RowDefinitions>
 
                 <DataGrid x:Name="meuDataGrid"
-                          ItemsSource="{Binding ProjetosView}" 
-                          SelectedItem="{Binding ProjetoSelecionado}"
+                          ItemsSource="{Binding OrcamentosView}"
                           AutoGenerateColumns="False" IsReadOnly="True"
                           Background="Transparent" BorderThickness="0"
                           CanUserAddRows="False"
@@ -160,20 +154,20 @@
                           CanUserResizeColumns="False"
                           CanUserReorderColumns="False"
                           GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#F1F5F9"
-                          HeadersVisibility="Column" 
+                          HeadersVisibility="Column"
                           RowHeight="60" SelectionMode="Single"
-                          FontSize="14" SelectionChanged="DataGrid_SelectionChanged">
+                          FontSize="14">
 
                     <DataGrid.Resources>
                         <Style TargetType="DataGridColumnHeader">
                             <Setter Property="Background" Value="#F8FAFC"/>
-                                <Setter Property="Foreground" Value="{StaticResource AeroTextMuted}"/>
-                                <Setter Property="FontWeight" Value="Bold"/>
-                                <Setter Property="FontSize" Value="13"/>
-                                <Setter Property="Padding" Value="15,12"/>
-                                <Setter Property="Cursor" Value="Hand"/>
-                                <Setter Property="BorderThickness" Value="0,0,0,1"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
+                            <Setter Property="Foreground" Value="{StaticResource AeroTextMuted}"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="FontSize" Value="13"/>
+                            <Setter Property="Padding" Value="15,12"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource AeroBorder}"/>
                         </Style>
 
                         <Style TargetType="DataGridCell">
@@ -201,36 +195,16 @@
                     </DataGrid.Resources>
 
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="DATA" 
-                                            Binding="{Binding data_criacao, StringFormat=dd/MM/yyyy}" 
-                                            Width="110" 
-                                            FontSize="14" 
+                        <DataGridTextColumn Header="DATA"
+                                            Binding="{Binding DataCriacao, StringFormat=dd/MM/yyyy}"
+                                            Width="110"
+                                            FontSize="14"
                                             FontWeight="SemiBold" />
 
-                        <DataGridTextColumn Header="EXPIRA EM" 
-                                            Binding="{Binding DataExpiracao, StringFormat=dd/MM/yyyy}" 
-                                            Width="110" 
-                                            FontSize="14" 
-                                            FontWeight="SemiBold">
-                            <DataGridTextColumn.ElementStyle>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Foreground" Value="{StaticResource AeroTextMuted}"/>
-
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding EstaVencido}" Value="True">
-                                            <Setter Property="Foreground" Value="{StaticResource AeroDanger}"/>
-                                            <Setter Property="FontWeight" Value="Bold"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </DataGridTextColumn.ElementStyle>
-                        </DataGridTextColumn>
-
-                        <DataGridTextColumn Header="NOME DO PROJETO" 
-                                            Binding="{Binding nome}" 
-                                            Width="*" 
-                                            FontSize="15" 
+                        <DataGridTextColumn Header="CLIENTE"
+                                            Binding="{Binding ClienteNome}"
+                                            Width="*"
+                                            FontSize="15"
                                             FontWeight="SemiBold">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -241,21 +215,27 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="CLIENTE" 
-                                            Binding="{Binding Cliente.nome}" 
-                                            Width="140" 
+                        <DataGridTextColumn Header="TELEFONE"
+                                            Binding="{Binding ClienteTelefone}"
+                                            Width="150"
                                             FontWeight="SemiBold"
                                             FontSize="14" />
 
-                        <DataGridTextColumn Header="TIPO" 
-                                            Binding="{Binding tipo}" 
-                                            Width="120" 
+                        <DataGridTextColumn Header="VEÍCULO"
+                                            Binding="{Binding VeiculoModelo}"
+                                            Width="150"
                                             FontWeight="SemiBold"
                                             FontSize="14" />
 
-                        <DataGridTextColumn Header="VALOR DE VENDA" 
-                                            Binding="{Binding Orcamento.valor_final, StringFormat='{}{0:C}', ConverterCulture=pt-BR}" 
-                                            Width="160" 
+                        <DataGridTextColumn Header="PLACA"
+                                            Binding="{Binding VeiculoPlaca}"
+                                            Width="110"
+                                            FontWeight="SemiBold"
+                                            FontSize="14" />
+
+                        <DataGridTextColumn Header="VALOR"
+                                            Binding="{Binding ValorTotal, StringFormat='{}{0:C}', ConverterCulture=pt-BR}"
+                                            Width="150"
                                             FontSize="16"  FontWeight="Bold">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
@@ -267,30 +247,13 @@
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="STATUS" 
-                                            Binding="{Binding status}" 
-                                            Width="120" 
-                                            FontSize="14" 
-                                            FontWeight="SemiBold" />
-
-                        <DataGridTemplateColumn Header="AÇÕES" Width="150">
+                        <DataGridTemplateColumn Header="AÇÕES" Width="110">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <Button Content="Editar" 
-                                                Command="{Binding DataContext.EditarCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                FontSize="13"
-                                                Foreground="{StaticResource AeroAccent}"
-                                                Background="Transparent" BorderThickness="0" Cursor="Hand" FontWeight="Bold" Margin="0,0,15,0"/>
-
-                                        <Button Content="Excluir" 
-                                                Command="{Binding DataContext.ExcluirCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                FontSize="13"
-                                                Foreground="{StaticResource AeroDanger}"
-                                                Background="Transparent" BorderThickness="0" Cursor="Hand" FontWeight="Bold"/>
-                                    </StackPanel>
+                                    <Button Content="Reabrir"
+                                            Command="{Binding DataContext.ReabrirCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Style="{StaticResource LinkBtn}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
@@ -298,26 +261,26 @@
                 </DataGrid>
 
                 <Border Grid.Row="1" Background="#F8FAFC" BorderThickness="0,1,0,0" BorderBrush="#F1F5F9" CornerRadius="0,0,16,16" Padding="20,12">
-                    <TextBlock Text="{Binding ProjetosView.Count, StringFormat='{}{0} projetos listados'}"
+                    <TextBlock Text="{Binding OrcamentosView.Count, StringFormat='{}{0} orçamentos listados'}"
                                FontSize="12" Foreground="{StaticResource AeroTextHint}" VerticalAlignment="Center"/>
                 </Border>
 
-                <Grid Grid.Row="0" Grid.RowSpan="2" 
+                <Grid Grid.Row="0" Grid.RowSpan="2"
                       x:Name="LoadingOverlay"
-                      Background="#CCFFFFFF" 
-                      Visibility="Collapsed">
+                      Background="#CCFFFFFF"
+                      Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <ProgressBar IsIndeterminate="True" 
-                                     Width="200" 
-                                     Height="6" 
-                                     Foreground="{StaticResource AzulAero}" 
-                                     Background="#E2E8F0" 
+                        <ProgressBar IsIndeterminate="True"
+                                     Width="200"
+                                     Height="6"
+                                     Foreground="{StaticResource AzulAero}"
+                                     Background="#E2E8F0"
                                      BorderThickness="0"/>
-                        <TextBlock Text="Carregando..." 
-                                   Margin="0,12,0,0" 
-                                   FontSize="13" 
+                        <TextBlock Text="Carregando..."
+                                   Margin="0,12,0,0"
+                                   FontSize="13"
                                    FontWeight="SemiBold"
-                                   Foreground="{StaticResource AzulAero}" 
+                                   Foreground="{StaticResource AzulAero}"
                                    HorizontalAlignment="Center"/>
                     </StackPanel>
                 </Grid>

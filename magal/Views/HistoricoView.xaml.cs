@@ -13,10 +13,6 @@ namespace magal.Views
             var viewModel = new HistoricoViewModel();
             this.DataContext = viewModel;
 
-            viewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            if (LoadingOverlay != null) LoadingOverlay.Visibility = Visibility.Visible;
-            if (meuDataGrid != null) meuDataGrid.IsEnabled = false;
             Loaded += HistoricoView_Loaded;
         }
 
@@ -24,32 +20,8 @@ namespace magal.Views
         {
             if (this.DataContext is HistoricoViewModel vm)
             {
-                await vm.CarregarHistorico();
+                await vm.CarregarHistoricoAsync();
             }
-        }
-
-        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (e.PropertyName == nameof(HistoricoViewModel.IsLoading) && sender is HistoricoViewModel vm)
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    if (vm.IsLoading)
-                    {
-                        if (LoadingOverlay != null) LoadingOverlay.Visibility = Visibility.Visible;
-                        if (meuDataGrid != null) meuDataGrid.IsEnabled = false;
-                    }
-                    else
-                    {
-                        if (LoadingOverlay != null) LoadingOverlay.Visibility = Visibility.Collapsed;
-                        if (meuDataGrid != null) meuDataGrid.IsEnabled = true;
-                    }
-                });
-            }
-        }
-
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
         }
     }
 }

@@ -2,442 +2,182 @@ using magal.Models;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 
 namespace magal.Services
 {
     /// <summary>
-    /// Serviço responsável pela geração e exportação de documentos em formato PDF no sistema.
+    /// Serviço responsável por gerar o PDF do orçamento no modelo utilizado pela Ice Car.
     /// </summary>
     public class PdfService
     {
-        #region Atributos e Campos Privados
+        private static readonly CultureInfo _ptBR = new CultureInfo("pt-BR");
 
-        /// <summary>
-        /// Cultura padrão utilizada para a formatação de valores monetários e datas em formato PT-BR.
-        /// </summary>
-        private static readonly CultureInfo _ptBR = new("pt-BR");
-
-        #endregion
-
-        #region Construtor Estático
+        private const string EmpresaNome = "Ice Car";
+        private const string EmpresaResponsavel = "58.385.817 YAGO LOPES FERNANDES";
+        private const string EmpresaCnpj = "CNPJ: 58.385.817/0001-05";
+        private const string EmpresaEndereco1 = "Rua Aldo Moreira dos Santos, 498, Ice Car Ar Condicionado Automotivo";
+        private const string EmpresaEndereco2 = "Jardim Santa Júlia, São José dos Campos-SP - CEP 12228-305";
+        private const string EmpresaEmail = "icecarsjc@gmail.com";
+        private const string EmpresaTelefone = "+55 (12) 98893-0176";
+        private const string EmpresaRedesSociais = "Instagram: icecar_sjc   |   Facebook: IceCar";
+        private const string MeiosPagamento = "Dinheiro, cartão de crédito, cartão de débito ou pix.";
+        private const string ValidadeOrcamento = "Orçamentos válidos por 10 dias.";
+        private const string CorPrimaria = "#14607D";
 
         static PdfService()
         {
-            // Define a licença do QuestPDF uma única vez na inicialização da aplicação
             QuestPDF.Settings.License = LicenseType.Community;
         }
 
-        #endregion
-
-        #region Métodos Públicos
-
-        /// <summary>
-        /// Gera e salva o arquivo de Proposta Técnica Comercial em PDF com base nos dados do projeto e custos extras informados.
-        /// </summary>
-        public void GerarPropostaTecnica(Projeto projeto, List<Custo> custosExtras, string caminhoArquivo)
+        public void GerarOrcamentoPdf(Orcamento orcamento, List<ItemOrcamento> itens, string caminhoArquivo)
         {
             Document.Create(container =>
             {
                 container.Page(page =>
                 {
                     page.Size(PageSizes.A4);
-                    page.Margin(0.6f, Unit.Centimetre);
+                    page.Margin(0.8f, Unit.Centimetre);
                     page.PageColor(Colors.White);
                     page.DefaultTextStyle(x => x.FontSize(10).FontFamily("Arial"));
 
-                    page.Header().Column(col => ConstruirCabecalho(col, projeto));
-                    page.Content().PaddingTop(16).Column(col => ConstruirConteudoPrincipal(col, projeto, custosExtras));
-                    page.Footer().BorderTop(1).BorderColor("#000000").PaddingTop(8).Row(ConstruirRodape);
+                    page.Header().Column(col => ConstruirCabecalho(col, orcamento));
+                    page.Content().PaddingTop(16).Column(col => ConstruirConteudo(col, orcamento, itens));
+                    page.Footer().BorderTop(1).BorderColor("#CBD5E1").PaddingTop(8).Row(row => ConstruirRodape(row));
                 });
             }).GeneratePdf(caminhoArquivo);
         }
 
-        /// <summary>
-        /// Gera e salva um relatório gerencial em PDF contendo a listagem tabular dos projetos.
-        /// </summary>
-        public void GerarRelatorioTabelaProjetos(List<Projeto> projetos, string caminhoArquivo)
+        private void ConstruirCabecalho(ColumnDescriptor col, Orcamento orcamento)
         {
-            Document.Create(container =>
-            {
-                container.Page(page =>
-                {
-                    page.Size(PageSizes.A4.Landscape());
-                    page.Margin(0.6f, Unit.Centimetre);
-                    page.PageColor(Colors.White);
-                    page.DefaultTextStyle(x => x.FontSize(11).FontFamily("Arial"));
-
-                    page.Header().Column(col => ConstruirCabecalhoRelatorio(col, "PROJETOS", projetos.Count));
-                    page.Content().PaddingTop(16).Column(col => ConstruirTabelaRelatorioProjetos(col, projetos));
-                    page.Footer().BorderTop(1).BorderColor("#000000").PaddingTop(8).Row(ConstruirRodape);
-                });
-            }).GeneratePdf(caminhoArquivo);
-        }
-
-        
-
-
-
-        #endregion
-
-        #region Métodos Auxiliares / Privados
-
-        private void ConstruirCabecalho(ColumnDescriptor col, Projeto projeto)
-        {
-            // 1. TOPO DO CABEÇALHO (Faixa Azul Escura - Aero embaixo do título)
-            col.Item().Background("#1E3A5F").Padding(16).Row(row =>
+            col.Item().Row(row =>
             {
                 row.RelativeItem().Column(c =>
                 {
-                    c.Item().Text("PROPOSTA TÉCNICA COMERCIAL").FontSize(20).Bold().FontColor(Colors.White);
-                    c.Item().Text(" AERO CONCEPTS - AEROESPACIAL, INDUSTRIAL E DEFESA LTDA").FontSize(9).Bold().FontColor("#A8C4E0");
-
-                    // Dados Aero Concepts
-                    c.Item().PaddingTop(6);
-                    c.Item().Text("CNPJ: 23.995.416/0002-73  |  Insc. Estadual: 125.380.094.115").FontSize(7).FontColor("#A8C4E0");
-                    c.Item().Text("Filial SJC: São José dos Campos - SP  |  CEP: 12247-016").FontSize(7).FontColor("#A8C4E0");
-                    c.Item().Text("Contato: contato@aeroconcepts.com.br  | +55 12 3905-4003").FontSize(7).FontColor("#A8C4E0");
+                    c.Item().Text(EmpresaNome).FontSize(18).Bold().FontColor(CorPrimaria);
+                    c.Item().Text(EmpresaResponsavel).FontSize(9).FontColor("#555555");
+                    c.Item().Text(EmpresaCnpj).FontSize(9).FontColor("#555555");
+                    c.Item().Text(EmpresaEndereco1).FontSize(9).FontColor("#555555");
+                    c.Item().Text(EmpresaEndereco2).FontSize(9).FontColor("#555555");
                 });
 
-                row.ConstantItem(100).AlignRight().AlignMiddle()
-                    .Text($"#{DateTime.Now:yyyyMMdd}")
-                    .FontSize(9).FontColor("#A8C4E0");
+                row.ConstantItem(200).Column(c =>
+                {
+                    c.Item().AlignRight().Text(EmpresaEmail).FontSize(9).FontColor("#555555");
+                    c.Item().AlignRight().Text(EmpresaTelefone).FontSize(9).FontColor("#555555");
+                    c.Item().PaddingTop(4).AlignRight().Text(EmpresaRedesSociais).FontSize(8).FontColor("#999999");
+                    c.Item().PaddingTop(4).AlignRight().Text($"Data: {orcamento.DataCriacao:dd/MM/yyyy}").FontSize(9).Bold().FontColor(CorPrimaria);
+                });
             });
 
-            // 2. CORPO DO CABEÇALHO (Faixa Clara - Cliente à esquerda, Projeto ao centro, Datas à direita)
-            col.Item().BorderBottom(1).BorderColor("#000000").PaddingVertical(10).Row(row =>
+            col.Item().PaddingTop(12).Background(CorPrimaria).Padding(10)
+                .Text($"Orçamento {orcamento.Id}-{orcamento.DataCriacao.Year}").FontSize(14).Bold().FontColor(Colors.White);
+
+            col.Item().PaddingTop(10).Column(c =>
             {
-                row.RelativeItem(1.5f).Column(c =>
+                c.Item().Text($"Cliente: {orcamento.ClienteNome}").FontSize(11).Bold();
+                if (!string.IsNullOrWhiteSpace(orcamento.ClienteTelefone))
+                    c.Item().Text(orcamento.ClienteTelefone).FontSize(9).FontColor("#555555");
+            });
+        }
+
+        private void ConstruirConteudo(ColumnDescriptor col, Orcamento orcamento, List<ItemOrcamento> itens)
+        {
+            col.Item().PaddingTop(6).Background(CorPrimaria).Padding(6).Text("INFORMAÇÕES BÁSICAS").FontColor(Colors.White).Bold().FontSize(10);
+
+            col.Item().PaddingTop(8).PaddingBottom(14).Table(table =>
+            {
+                table.ColumnsDefinition(c =>
                 {
-                    c.Item().Text("CLIENTE").FontSize(7).FontColor("#999999").Bold();
-                    c.Item().Text(projeto.Cliente?.nome ?? "Consumidor Final").FontSize(12).Bold().FontColor("#1E3A5F");
+                    c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn(); c.RelativeColumn();
+                });
 
-                    // Dados dinâmicos do Cliente vindos do banco
-                    c.Item().PaddingTop(2);
-
-                    string docCliente = projeto.Cliente?.cpf_cnpj ?? "Não Informado";
-                    c.Item().Text($"CNPJ/CPF: {docCliente}").FontSize(8).FontColor("#555555");
-
-                    string contatoCliente = projeto.Cliente?.contato ?? "Não Informado";
-                    c.Item().Text($"Contato: {contatoCliente}").FontSize(8).FontColor("#555555");
-
-                    if (projeto.Cliente != null && !string.IsNullOrEmpty(projeto.Cliente.cidade))
+                void Campo(string rotulo, string valor)
+                {
+                    table.Cell().Column(cc =>
                     {
-                        c.Item().Text($"Localidade: {projeto.Cliente.cidade}/{projeto.Cliente.estado}").FontSize(8).FontColor("#555555");
-                    }
-                });
+                        cc.Item().Text(rotulo).FontSize(8).Bold().FontColor("#999999");
+                        cc.Item().Text(string.IsNullOrWhiteSpace(valor) ? "-" : valor).FontSize(11).Bold();
+                    });
+                }
 
-                row.ConstantItem(15);
-                row.RelativeItem().Column(c =>
-                {
-                    c.Item().Text("PROJETO").FontSize(7).FontColor("#999999").Bold();
-                    c.Item().Text(projeto.nome).FontSize(12).Bold().FontColor("#1E3A5F");
-
-                    c.Item().PaddingTop(2);
-                    c.Item().Text($"Cód. Projeto: PRJ-{projeto.id_projeto}").FontSize(8).FontColor("#555555");
-                });
-
-                row.ConstantItem(120).AlignRight().Column(c =>
-                {
-                    c.Item().Text("DATA DE EMISSÃO").FontSize(7).FontColor("#999999").Bold();
-                    c.Item().Text(projeto.Orcamento?.data_criacao.ToString("dd/MM/yyyy") ?? DateTime.Now.ToString("dd/MM/yyyy")).FontSize(11).Bold().FontColor("#1E3A5F");
-
-                    c.Item().PaddingTop(4);
-
-                    c.Item().Text("VÁLIDO ATÉ").FontSize(7).FontColor("#999999").Bold();
-                    c.Item().Text(projeto.DataExpiracao.ToString("dd/MM/yyyy")).FontSize(11).Bold().FontColor("#EF4444");
-                });
+                Campo("MARCA", orcamento.VeiculoMarca);
+                Campo("MODELO", orcamento.VeiculoModelo);
+                Campo("PLACA", orcamento.VeiculoPlaca);
+                Campo("COR", orcamento.VeiculoCor);
+                Campo("ANO", orcamento.VeiculoAno > 0 ? orcamento.VeiculoAno.ToString() : null);
             });
-        }
 
-        private void ConstruirConteudoPrincipal(ColumnDescriptor col, Projeto projeto, List<Custo> custosExtras)
-        {
-            // 1. COMPOSIÇÃO DE MÃO DE OBRA E TAREFAS
-            col.Item().Text("1. COMPOSIÇÃO DE MÃO DE OBRA E TAREFAS").FontSize(9).Bold().FontColor("#555555");
-            col.Item().PaddingTop(6).PaddingBottom(15).Table(table =>
+            col.Item().Background(CorPrimaria).Padding(6).Text("SERVIÇOS").FontColor(Colors.White).Bold().FontSize(10);
+
+            col.Item().PaddingTop(8).Table(table =>
             {
-                table.ColumnsDefinition(cols =>
-                {
-                    cols.RelativeColumn(4.5f);
-                    cols.RelativeColumn(2.5f);
-                    cols.RelativeColumn(1);
-                    cols.RelativeColumn(2);
-                });
+                table.ColumnsDefinition(c => { c.RelativeColumn(4); c.RelativeColumn(1); });
 
                 table.Header(header =>
                 {
-                    header.Cell().Background("#1E3A5F").Padding(8).Text("TAREFAS/DESCRIÇÃO").FontColor(Colors.White).Bold().FontSize(9);
-                    header.Cell().Background("#1E3A5F").Padding(8).Text("RESPONSÁVEL").FontColor(Colors.White).Bold().FontSize(9);
-                    header.Cell().Background("#1E3A5F").Padding(8).AlignCenter().Text("HORAS").FontColor(Colors.White).Bold().FontSize(9);
-                    header.Cell().Background("#1E3A5F").Padding(8).AlignRight().Text("TOTAL").FontColor(Colors.White).Bold().FontSize(9);
+                    header.Cell().BorderBottom(1).BorderColor("#CBD5E1").Padding(6).Text("DESCRIÇÃO").Bold().FontSize(9).FontColor("#555555");
+                    header.Cell().BorderBottom(1).BorderColor("#CBD5E1").Padding(6).AlignRight().Text("PREÇO").Bold().FontSize(9).FontColor("#555555");
                 });
 
-                foreach (var item in projeto.Tarefas)
+                foreach (var item in itens)
                 {
-                    table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).Text(item.descricao).FontSize(9);
-                    table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).Text(item.Funcionario?.nome ?? "N/D").FontSize(9);
-
-                    string sufixoHoras = item.horas_estimadas == 1 ? " hora" : " horas";
-                    table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).AlignCenter().Text($"{item.horas_estimadas:0.#}{sufixoHoras}").FontSize(9);
-
-                    table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).AlignRight().Text(item.custo_real.ToString("C2", _ptBR)).FontSize(9).Bold();
+                    table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(6).Text(item.Descricao).FontSize(10);
+                    table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(6).AlignRight().Text(item.ValorUnitario.ToString("C2", _ptBR)).FontSize(10).Bold();
                 }
             });
 
-            // 2. EQUIPAMENTOS, LICENÇAS E CUSTOS ADICIONAIS
-            if (custosExtras != null && custosExtras.Any())
+            col.Item().PaddingTop(6).Background(CorPrimaria).Padding(8).Row(row =>
             {
-                col.Item().Text("2. EQUIPAMENTOS, LICENÇAS E CUSTOS ADICIONAIS").FontSize(9).Bold().FontColor("#555555");
-                col.Item().PaddingTop(6).PaddingBottom(15).Table(table =>
-                {
-                    table.ColumnsDefinition(cols =>
-                    {
-                        cols.RelativeColumn(5.5f); cols.RelativeColumn(1.5f); cols.RelativeColumn(2);
-                    });
-
-                    table.Header(header =>
-                    {
-                        header.Cell().Background("#1E3A5F").Padding(8).Text("DESCRIÇÃO DO ITEM").FontColor(Colors.White).Bold().FontSize(9);
-                        header.Cell().Background("#1E3A5F").Padding(8).Text("CATEGORIA").FontColor(Colors.White).Bold().FontSize(9);
-                        header.Cell().Background("#1E3A5F").Padding(8).AlignRight().Text("VALOR").FontColor(Colors.White).Bold().FontSize(9);
-                    });
-
-                    foreach (var custo in custosExtras)
-                    {
-                        table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).Text(custo.nome).FontSize(9);
-                        table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).Text(custo.categoria).FontSize(9);
-                        table.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).AlignRight().Text(custo.valor.ToString("C2", _ptBR)).FontSize(9).Bold();
-                    }
-                });
-            }
-
-            // 3. CONDIÇÕES COMERCIAIS
-            col.Item().Text("3. CONDIÇÕES COMERCIAIS").FontSize(9).Bold().FontColor("#555555");
-            col.Item().PaddingTop(6).PaddingBottom(15).Table(tCondicoes =>
-            {
-                tCondicoes.ColumnsDefinition(c =>
-                {
-                    c.RelativeColumn();
-                    c.RelativeColumn();
-                });
-
-                tCondicoes.Header(header =>
-                {
-                    header.Cell().Background("#1E3A5F").Padding(8).Text("PRAZO TOTAL ESTIMADO").FontColor(Colors.White).Bold().FontSize(9);
-                    header.Cell().Background("#1E3A5F").Padding(8).Text("FORMA DE PAGAMENTO").FontColor(Colors.White).Bold().FontSize(9);
-                });
-
-                string prazoExibicao = projeto.Orcamento?.prazo_entrega?.ToString("dd/MM/yyyy") ?? "A combinar";
-                tCondicoes.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8)
-                    .Text(prazoExibicao).FontSize(9);
-
-                tCondicoes.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8)
-                    .Text(projeto.Orcamento?.forma_pagamento ?? "A combinar").FontSize(9);
+                row.RelativeItem().Text("Total").FontColor(Colors.White).Bold().FontSize(11);
+                row.ConstantItem(120).AlignRight().Text(orcamento.ValorTotal.ToString("C2", _ptBR)).FontColor(Colors.White).Bold().FontSize(11);
             });
 
-            // 4. OBSERVAÇÕES DA PROPOSTA
-            if (!string.IsNullOrWhiteSpace(projeto.Orcamento?.observacoes))
+            col.Item().PaddingTop(18).Background(CorPrimaria).Padding(6).Text("PAGAMENTO").FontColor(Colors.White).Bold().FontSize(10);
+            col.Item().PaddingTop(6).Text(c =>
             {
-                col.Item().Column(obsCol =>
-                {
-                    obsCol.Item().Text("4. OBSERVAÇÕES DA PROPOSTA").FontSize(9).Bold().FontColor("#555555");
-                    obsCol.Item().PaddingTop(6).PaddingBottom(15).Table(tObs =>
-                    {
-                        tObs.ColumnsDefinition(c => c.RelativeColumn());
-                        tObs.Header(header =>
-                        {
-                            header.Cell().Background("#1E3A5F").Padding(8)
-                                .Text("NOTAS E OBSERVAÇÕES COMPLEMENTARES").FontColor(Colors.White).Bold().FontSize(9);
-                        });
+                c.Span("Meios de pagamento: ").Bold().FontSize(9);
+                c.Span(MeiosPagamento).FontSize(9);
+            });
 
-                        tObs.Cell().BorderBottom(1).BorderColor("#E8EDF2").Padding(8).Text(txt =>
-                        {
-                            var linhas = projeto.Orcamento.observacoes.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            col.Item().PaddingTop(14).Background(CorPrimaria).Padding(6).Text("GARANTIA").FontColor(Colors.White).Bold().FontSize(10);
+            col.Item().PaddingTop(6).Text(c =>
+            {
+                c.Span("Período de garantia: ").Bold().FontSize(9);
+                c.Span($"{orcamento.GarantiaDias} dias").FontSize(9);
+            });
 
-                            foreach (var linha in linhas)
-                            {
-                                if (!string.IsNullOrWhiteSpace(linha))
-                                {
-                                    txt.Line(linha).FontSize(9);
-                                }
-                                else
-                                {
-                                    txt.Line("");
-                                }
-                            }
-                        });
-                    });
-                });
-            }
+            col.Item().PaddingTop(14).Background(CorPrimaria).Padding(6).Text("INFORMAÇÕES ADICIONAIS").FontColor(Colors.White).Bold().FontSize(10);
+            col.Item().PaddingTop(6).Column(c =>
+            {
+                if (!string.IsNullOrWhiteSpace(orcamento.Observacoes))
+                    c.Item().Text(orcamento.Observacoes).FontSize(9);
 
-            // 5. RESUMO FINANCEIRO FINAL 
-            col.Item().PaddingTop(15).Row(row =>
+                c.Item().PaddingTop(4).Text(ValidadeOrcamento).FontSize(9);
+            });
+
+            col.Item().PaddingTop(60).Row(row =>
             {
                 row.RelativeItem();
-
-                row.ConstantItem(300).Column(resumo =>
+                row.ConstantItem(260).Column(c =>
                 {
-                    resumo.Item().Text("RESUMO FINANCEIRO").FontSize(9).Bold().FontColor("#555555");
-                    resumo.Item().PaddingTop(6).Table(t =>
-                    {
-                        t.ColumnsDefinition(c => { c.RelativeColumn(3); c.RelativeColumn(1); c.RelativeColumn(2); });
-
-                        void Linha(string label, string pct, string valor, bool destaque = false)
-                        {
-                            var bg = destaque ? "#1E3A5F" : "#FFFFFF";
-                            var fg = destaque ? "#FFFFFF" : "#333333";
-
-                            var cLabel = t.Cell().Background(bg).Padding(6);
-                            if (!destaque) cLabel = cLabel.BorderBottom(1).BorderColor("#F1F5F9");
-                            var tLabel = cLabel.Text(label).FontSize(9).FontColor(fg);
-                            if (destaque) tLabel.Bold();
-
-                            var cPct = t.Cell().Background(bg).Padding(6).AlignCenter();
-                            if (!destaque) cPct = cPct.BorderBottom(1).BorderColor("#F1F5F9");
-                            var tPct = cPct.Text(pct).FontSize(9).FontColor(fg);
-                            if (destaque) tPct.Bold();
-
-                            var cValor = t.Cell().Background(bg).Padding(6).AlignRight();
-                            if (!destaque) cValor = cValor.BorderBottom(1).BorderColor("#F1F5F9");
-                            var tValor = cValor.Text(valor).FontSize(9).FontColor(fg);
-                            if (destaque) tValor.Bold();
-                        }
-
-                        decimal custoBase = projeto.Orcamento?.custo_base ?? 0;
-                        decimal pctImpostos = projeto.Orcamento?.percentual_impostos ?? 0;
-                        decimal valImpostos = projeto.Orcamento?.valor_impostos ?? 0;
-                        decimal pctMargem = projeto.Orcamento?.margem_percentual ?? 0;
-                        decimal valMargem = projeto.Orcamento?.valor_margem ?? 0;
-                        decimal valFinal = projeto.Orcamento?.valor_final ?? 0;
-
-                        Linha("Custo Total Base", "", custoBase.ToString("C2", _ptBR));
-                        Linha("Impostos", $"{pctImpostos:0.#}%", valImpostos.ToString("C2", _ptBR));
-                        Linha("Margem de Lucro", $"{pctMargem:0.#}%", valMargem.ToString("C2", _ptBR));
-                        Linha("VALOR TOTAL DA PROPOSTA", "", valFinal.ToString("C2", _ptBR), destaque: true);
-                    });
-                });
-            });
-
-            // 6. BLOCO DE ASSINATURAS 
-            col.Item().PaddingTop(80).Row(row =>
-            {
-                // Assinatura da Empresa Emitente
-                row.RelativeItem().Column(assinaturaEmpresa =>
-                {
-                    assinaturaEmpresa.Item().BorderBottom(1).BorderColor("#A0AEC0").PaddingBottom(2);
-                    assinaturaEmpresa.Item().PaddingTop(4).Text("Aero Concepts — Engenharia Aeronáutica").FontSize(9).Bold().FontColor("#2D3748");
-                    assinaturaEmpresa.Item().Text("Responsável Técnico / Comercial").FontSize(8).FontColor("#718096");
-                });
-
-                row.ConstantItem(40);
-
-                // Assinatura do Cliente 
-                row.RelativeItem().Column(assinaturaCliente =>
-                {
-                    assinaturaCliente.Item().BorderBottom(1).BorderColor("#A0AEC0").PaddingBottom(2);
-                    assinaturaCliente.Item().PaddingTop(4).Text($"De acordo: {projeto.Cliente?.nome ?? "Funcate"}").FontSize(9).Bold().FontColor("#2D3748");
-                    assinaturaCliente.Item().Text("Assinatura do Cliente / Data").FontSize(8).FontColor("#718096");
-                });
-            });
-        }
-        private void ConstruirCabecalhoRelatorio(ColumnDescriptor col, string tipoRelatorio, int totalRegistros)
-        {
-            col.Item().Background("#1E3A5F").Padding(14).Row(row =>
-            {
-                row.RelativeItem().Column(c =>
-                {
-                    c.Item().Text($"RELATÓRIO GERENCIAL DE {tipoRelatorio.ToUpper()}").FontSize(18).Bold().FontColor(Colors.White);
-                    c.Item().Text("AERO CONCEPTS — AEROESPACIAL, INDUSTRIAL E DEFESA LTDA").FontSize(10).FontColor("#A8C4E0");
-                });
-
-                row.ConstantItem(220).AlignRight().AlignMiddle().Column(c =>
-                {
-                    c.Item().Text($"Emitido em: {DateTime.Now:dd/MM/yyyy HH:mm}").FontSize(10).FontColor(Colors.White);
-                    c.Item().Text($"Total de registros exibidos: {totalRegistros}").FontSize(10).FontColor("#A8C4E0").Bold();
+                    c.Item().BorderBottom(1).BorderColor("#A0AEC0").PaddingBottom(2);
+                    c.Item().PaddingTop(4).AlignCenter().Text(EmpresaNome).FontSize(9).Bold();
                 });
             });
         }
 
-        private void ConstruirTabelaRelatorioProjetos(ColumnDescriptor col, List<Projeto> projetos)
-        {
-            col.Item().Table(table =>
-            {
-                table.ColumnsDefinition(cols =>
-                {
-                    cols.ConstantColumn(45);   // ID
-                    cols.RelativeColumn(3);    // Nome do Projeto
-                    cols.RelativeColumn(2.5f); // Cliente
-                    cols.RelativeColumn(1.3f); // Tipo
-                    cols.RelativeColumn(1.5f); // Status
-                    cols.ConstantColumn(85);   // Vencimento
-                    cols.RelativeColumn(2.2f); // Valor Final
-                });
-
-                table.Header(header =>
-                {
-                    header.Cell().Background("#2D3748").Padding(8).Text("ID").FontColor(Colors.White).Bold().FontSize(9.5f);
-                    header.Cell().Background("#2D3748").Padding(8).Text("NOME DO PROJETO").FontColor(Colors.White).Bold().FontSize(9.5f);
-                    header.Cell().Background("#2D3748").Padding(8).Text("CLIENTE").FontColor(Colors.White).Bold().FontSize(9.5f);
-                    header.Cell().Background("#2D3748").Padding(8).Text("TIPO").FontColor(Colors.White).Bold().FontSize(9.5f);
-                    header.Cell().Background("#2D3748").Padding(8).Text("STATUS").FontColor(Colors.White).Bold().FontSize(9.5f);
-                    header.Cell().Background("#2D3748").Padding(8).Text("VENCIMENTO").FontColor(Colors.White).Bold().FontSize(9.5f);
-                    header.Cell().Background("#2D3748").Padding(8).AlignRight().Text("VALOR FINAL").FontColor(Colors.White).Bold().FontSize(9.5f);
-                });
-
-                bool listraAlternada = false;
-                foreach (var p in projetos)
-                {
-                    string corFundo = listraAlternada ? "#F8FAFC" : "#FFFFFF";
-
-                    table.Cell().Background(corFundo).BorderBottom(1).BorderColor("#E2E8F0").Padding(8).AlignCenter().Text(p.id_projeto.ToString()).FontSize(10);
-                    table.Cell().Background(corFundo).BorderBottom(1).BorderColor("#E2E8F0").Padding(8).Text(p.nome ?? "-").FontSize(10).Bold();
-                    table.Cell().Background(corFundo).BorderBottom(1).BorderColor("#E2E8F0").Padding(8).Text(p.Cliente?.nome ?? "Consumidor Final").FontSize(10);
-                    table.Cell().Background(corFundo).BorderBottom(1).BorderColor("#E2E8F0").Padding(8).Text(p.tipo ?? "-").FontSize(10);
-                    table.Cell().Background(corFundo).BorderBottom(1).BorderColor("#E2E8F0").Padding(8).Text(p.status?.ToUpper() ?? "N/D").FontSize(10).Bold();
-
-                    string corData = p.EstaVencido ? "#EF4444" : "#333333";
-                    table.Cell().Background(corFundo).BorderBottom(1).BorderColor("#E2E8F0").Padding(8).AlignCenter().Text(p.DataExpiracao.ToString("dd/MM/yyyy")).FontSize(10).FontColor(corData);
-
-                    decimal valorFinal = p.Orcamento?.valor_final ?? 0;
-                    table.Cell().Background(corFundo).BorderBottom(1).BorderColor("#E2E8F0").Padding(8).AlignRight().Text(valorFinal.ToString("C2", _ptBR)).FontSize(10).Bold();
-
-                    listraAlternada = !listraAlternada;
-                }
-            });
-
-            decimal totalFaturado = projetos.Where(p => p.Orcamento != null).Sum(p => p.Orcamento.valor_final);
-            decimal totalLucro = projetos.Where(p => p.Orcamento != null).Sum(p => p.Orcamento.valor_margem);
-
-            col.Item().PaddingTop(12).AlignRight().Width(280).Table(t =>
-            {
-                t.ColumnsDefinition(c => { c.RelativeColumn(1); c.RelativeColumn(1); });
-
-                t.Cell().Background("#EDF2F7").Padding(6).Text("Lucro Estimado:").FontSize(10).FontColor("#2D3748").Bold();
-                t.Cell().Background("#EDF2F7").Padding(6).AlignRight().Text(totalLucro.ToString("C2", _ptBR)).FontSize(10).FontColor("#2D3748").Bold();
-
-                t.Cell().Background("#1E3A5F").Padding(6).Text("Faturamento Total:").FontSize(10).FontColor(Colors.White).Bold();
-                t.Cell().Background("#1E3A5F").Padding(6).AlignRight().Text(totalFaturado.ToString("C2", _ptBR)).FontSize(10).FontColor(Colors.White).Bold();
-            });
-        }
-
-      
         private void ConstruirRodape(RowDescriptor row)
         {
-            row.RelativeItem().Text(" AERO CONCEPTS - AEROESPACIAL, INDUSTRIAL E DEFESA LTDA").FontSize(8).FontColor("#AAAAAA");
+            row.RelativeItem().Text($"{EmpresaResponsavel} - {EmpresaCnpj}").FontSize(7).FontColor("#999999");
             row.ConstantItem(80).AlignRight().Text(x =>
             {
-                x.Span("Página ").FontSize(8);
-                x.CurrentPageNumber().FontSize(8);
-                x.Span(" de ").FontSize(8);
-                x.TotalPages().FontSize(8);
+                x.Span("Página ").FontSize(7);
+                x.CurrentPageNumber().FontSize(7);
+                x.Span(" de ").FontSize(7);
+                x.TotalPages().FontSize(7);
             });
         }
-
-        #endregion
-
-       
     }
 }

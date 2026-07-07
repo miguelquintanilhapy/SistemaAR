@@ -1,83 +1,37 @@
+using System;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
 using System.ComponentModel;
-using System.Windows.Data;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Threading.Tasks; 
-using Microsoft.Win32;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Data;
 using magal.Models;
 using magal.Data.Repositories;
-using magal.Services;
 
 namespace magal.ViewModels
 {
     /// <summary>
-    /// ViewModel responsável por gerenciar a tela de histórico de projetos, 
-    /// controlando filtros de busca, indicadores financeiros e ações de edição/exclusão.
+    /// ViewModel responsável pela tela de histórico: listagem, busca por cliente/placa,
+    /// indicadores rápidos e reabertura de orçamentos já salvos.
     /// </summary>
     public class HistoricoViewModel : BaseModel
     {
-        #region Atributos e Campos Privados
+        private readonly OrcamentoRepository _repository = new OrcamentoRepository();
+        private static readonly CultureInfo _ptBR = new CultureInfo("pt-BR");
 
-        private readonly ProjetoRepository _repository;
-        private Projeto _projetoSelecionado;
         private string _filtroTexto;
-        private string _totalFinanceiro;
-        private string _totalLucro;
-        private int _quantidadeProjetos;
+        private bool _isLoading;
+        private int _quantidadeOrcamentos;
+        private string _valorTotal = "R$ 0,00";
+        private string _ticketMedio = "R$ 0,00";
 
-        private bool _isLoading = true;
-
-        /// <summary>
-        /// Cultura padrão para formatação monetária nacional.
-        /// </summary>
-        private static readonly CultureInfo _ptBR = new("pt-BR");
-
-        #endregion
-
-        #region Propriedades de Indicadores e Filtros
-
-        /// <summary>
-        /// Obtém ou define o estado de carregamento atual da ViewModel.
-        /// </summary>
         public bool IsLoading
         {
             get => _isLoading;
             set { _isLoading = value; OnPropertyChanged(); }
         }
 
-        /// <summary>
-        /// Obtém ou define o valor formatado do faturamento total dos projetos visíveis.
-        /// </summary>
-        public string TotalFinanceiro
-        {
-            get => _totalFinanceiro;
-            set { _totalFinanceiro = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Obtém ou define o valor formatado do lucro total (margem) dos projetos visíveis.
-        /// </summary>
-        public string TotalLucro
-        {
-            get => _totalLucro;
-            set { _totalLucro = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Obtém ou define a quantidade total de projetos que atendem ao filtro atual.
-        /// </summary>
-        public int QuantidadeProjetos
-        {
-            get => _quantidadeProjetos;
-            set { _quantidadeProjetos = value; OnPropertyChanged(); }
-        }
-
-        /// <summary>
-        /// Obtém ou define o texto de busca utilizado para filtrar os projetos na tela em tempo real.
-        /// </summary>
         public string FiltroTexto
         {
             get => _filtroTexto;
@@ -85,88 +39,45 @@ namespace magal.ViewModels
             {
                 _filtroTexto = value;
                 OnPropertyChanged();
-                ProjetosView?.Refresh();
+                OrcamentosView.Refresh();
                 AtualizarIndicadores();
             }
         }
 
-        /// <summary>
-        /// Obtém ou define o projeto atualmente selecionado na listagem (DataGrid).
-        /// </summary>
-        public Projeto ProjetoSelecionado
+        public int QuantidadeOrcamentos
         {
-            get => _projetoSelecionado;
-            set { _projetoSelecionado = value; OnPropertyChanged(); }
+            get => _quantidadeOrcamentos;
+            set { _quantidadeOrcamentos = value; OnPropertyChanged(); }
         }
 
-        #endregion
+        public string ValorTotal
+        {
+            get => _valorTotal;
+            set { _valorTotal = value; OnPropertyChanged(); }
+        }
 
-        #region Coleções e Visões de Dados
+        public string TicketMedio
+        {
+            get => _ticketMedio;
+            set { _ticketMedio = value; OnPropertyChanged(); }
+        }
 
-        /// <summary>
-        /// Lista observável de projetos carregados do banco de dados.
-        /// </summary>
-        public ObservableCollection<Projeto> Projetos { get; } = new ObservableCollection<Projeto>();
+        public ObservableCollection<Orcamento> Orcamentos { get; } = new ObservableCollection<Orcamento>();
+        public ICollectionView OrcamentosView { get; }
 
-        /// <summary>
-        /// Visão customizada da coleção de projetos que permite a aplicação de filtros em tempo real sem perder a lista original.
-        /// </summary>
-        public ICollectionView ProjetosView { get; private set; }
-
-        #endregion
-
-        #region Comandos disparados pela View
-
-        /// <summary>
-        /// Comando para deletar um projeto do banco de dados e da listagem.
-        /// </summary>
-        public RelayCommand ExcluirCommand { get; }
-
-        /// <summary>
-        /// Comando para redirecionar o usuário para a tela de edição do projeto selecionado.
-        /// </summary>
-        public RelayCommand EditarCommand { get; }
-
-        /// <summary>
-        /// Comando para recarregar a lista do histórico a partir do banco de dados.
-        /// </summary>
+        public RelayCommand ReabrirCommand { get; }
         public RelayCommand AtualizarCommand { get; }
 
-        /// <summary>
-        /// Comando para exportar a listagem atual filtrada de projetos para um relatório em PDF.
-        /// </summary>
-        public RelayCommand ExportarPdfCommand { get; }
-
-        #endregion
-
-        #region Construtores
-
-        /// <summary>
-        /// Inicializa uma nova instância da classe <see cref="HistoricoViewModel"/>, configurando os repositórios, comandos e filtros.
-        /// </summary>
         public HistoricoViewModel()
         {
-            _repository = new ProjetoRepository();
+            OrcamentosView = CollectionViewSource.GetDefaultView(Orcamentos);
+            OrcamentosView.Filter = FiltrarOrcamento;
 
-            // Configuração do mecanismo de filtragem do WPF
-            ProjetosView = CollectionViewSource.GetDefaultView(Projetos);
-            ProjetosView.Filter = FiltroDeProjetos;
+            ReabrirCommand = new RelayCommand(p => ExecutarReabertura(p as Orcamento));
+            AtualizarCommand = new RelayCommand(async _ => await CarregarHistoricoAsync());
+        }
 
-            // Inicialização dos comandos mapeados para os botões da tela
-            ExcluirCommand = new RelayCommand(p => ExecutarExclusao(p as Projeto));
-            EditarCommand = new RelayCommand(p => ExecutarEdicao(p as Projeto));
-            AtualizarCommand = new RelayCommand(async _ => await CarregarHistorico());
-            ExportarPdfCommand = new RelayCommand(_ => ExecutarExportacaoPdf());
-             }
-
-        #endregion
-
-        #region Métodos Públicos
-
-        /// <summary>
-        /// Busca a lista atualizada de projetos do banco de dados e limpa os filtros da tela.
-        /// </summary>
-        public async Task CarregarHistorico()
+        public async Task CarregarHistoricoAsync()
         {
             try
             {
@@ -174,190 +85,75 @@ namespace magal.ViewModels
 
                 _filtroTexto = string.Empty;
                 OnPropertyChanged(nameof(FiltroTexto));
-                var lista = await _repository.BuscarTodosPorUsuario(1);
-                Projetos.Clear();
 
-                foreach (var p in lista)
-                {
-                    if (p.Orcamento == null)
-                    {
-                        p.Orcamento = new Orcamento();
-                    }
+                var lista = await _repository.ObterTodosParaHistoricoAsync();
 
-                    Projetos.Add(p);
-                    p.OnPropertyChanged(nameof(p.DataExpiracao));
-                    p.OnPropertyChanged(nameof(p.EstaVencido));
-                }
+                Orcamentos.Clear();
+                foreach (var o in lista) Orcamentos.Add(o);
 
                 AtualizarIndicadores();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar histórico: {ex.Message}", "Aviso de Sistema", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Erro ao carregar histórico: " + ex.Message, "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             finally
-                {
-                    IsLoading = false;
-                }
+            {
+                IsLoading = false;
+            }
         }
 
-        #endregion
-
-        #region Métodos Auxiliares / Privados
-
-        /// <summary>
-        /// Avalia se um projeto deve ser exibido no DataGrid com base no texto inserido no campo de busca.
-        /// </summary>
-        private bool FiltroDeProjetos(object obj)
+        private bool FiltrarOrcamento(object obj)
         {
             if (string.IsNullOrWhiteSpace(FiltroTexto)) return true;
-            if (obj is not Projeto projeto) return false;
+            if (obj is not Orcamento orcamento) return false;
 
-            var busca = FiltroTexto.ToLower().Trim();
+            var busca = FiltroTexto.Trim();
 
-            bool dataExpiracaoBate = projeto.Orcamento != null &&
-                                     projeto.DataExpiracao.ToString("dd/MM/yyyy").Contains(busca);
-
-            return (projeto.nome?.ToLower().Contains(busca) ?? false) ||
-                   (projeto.status?.ToLower().Contains(busca) ?? false) ||
-                   (projeto.tipo?.ToLower().Contains(busca) ?? false) ||
-                   (projeto.Cliente?.nome?.ToLower().Contains(busca) ?? false) ||
-                   dataExpiracaoBate;
+            return (orcamento.ClienteNome?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                   (orcamento.VeiculoPlaca?.Contains(busca, StringComparison.OrdinalIgnoreCase) ?? false);
         }
 
-        /// <summary>
-        /// Recalcula e atualiza as propriedades de resumo financeiro e quantidade com base estritamente nos projetos visíveis pós-filtro.
-        /// </summary>
         private void AtualizarIndicadores()
         {
-            var projetosVisiveis = ProjetosView.Cast<Projeto>().ToList();
+            var visiveis = OrcamentosView.Cast<Orcamento>().ToList();
 
-            QuantidadeProjetos = projetosVisiveis.Count;
+            QuantidadeOrcamentos = visiveis.Count;
 
-            //Dados financeiros (Faturamento e Lucro) são exclusivos do Administrador
-            if (Sessao.UsuarioLogado != null && Sessao.UsuarioLogado.nivel == "Administrador")
-            {
-                decimal somaFaturamento = projetosVisiveis
-                    .Where(p => p.Orcamento != null)
-                    .Sum(p => p.Orcamento.valor_final);
+            decimal soma = visiveis.Sum(o => o.ValorTotal);
+            decimal media = visiveis.Count > 0 ? soma / visiveis.Count : 0;
 
-                decimal somaLucro = projetosVisiveis
-                    .Where(p => p.Orcamento != null)
-                    .Sum(p => p.Orcamento.valor_margem);
-
-                TotalFinanceiro = somaFaturamento.ToString("C2", _ptBR);
-                TotalLucro = somaLucro.ToString("C2", _ptBR);
-            }
-            else
-            {
-                // Oculta e simplifica o visual para nível Operador ou menor
-                TotalFinanceiro = "—";
-                TotalLucro = "—";
-            }
+            ValorTotal = soma.ToString("C2", _ptBR);
+            TicketMedio = media.ToString("C2", _ptBR);
         }
 
-        /// <summary>
-        /// Pega os projetos atualmente visíveis na tela (aplicados os filtros) e gera um relatório tabular em PDF.
-        /// </summary>
-        private void ExecutarExportacaoPdf()
+        private async void ExecutarReabertura(Orcamento orcamento)
         {
-            var proyectosVisiveis = ProjetosView.Cast<Projeto>().ToList();
-
-            if (!proyectosVisiveis.Any())
-            {
-                MessageBox.Show("Não há dados na tabela atual para exportar o relatório.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            var sfd = new SaveFileDialog
-            {
-                Filter = "PDF|*.pdf",
-                FileName = $"Relatorio_Projetos_{DateTime.Now:yyyyMMdd_HHmmss}"
-            };
-
-            if (sfd.ShowDialog() == true)
-            {
-                try
-                {
-                    new PdfService().GerarRelatorioTabelaProjetos(proyectosVisiveis, sfd.FileName);
-                    MessageBox.Show("Relatório de listagem exportado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Erro ao exportar o relatório de projetos: {ex.Message}", "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Solicita a confirmação do usuário e executa a exclusão física do projeto no banco de dados e na memória.
-        /// </summary>
-        private void ExecutarExclusao(Projeto projeto)
-        {
-            if (projeto == null) return;
-
-            // Verifica se a sessão existe e se o nível NÃO é Administrador
-            if (Sessao.UsuarioLogado == null || Sessao.UsuarioLogado.nivel != "Administrador")
-            {
-                MessageBox.Show(
-                    "Acesso Restrito!\nApenas usuários com nível 'Administrador' possuem permissão para excluir projetos.",
-                    "Aero Concepts - Segurança",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Warning);
-
-                return; // Interrompe a execução aqui, blindando a ação
-            }
-
-            var result = MessageBox.Show(
-                $"Deseja realmente excluir o projeto '{projeto.nome}'?\nEsta ação não poderá ser desfeita.",
-                "Atenção - Confirmação",
-                MessageBoxButton.YesNo,
-                MessageBoxImage.Warning);
-
-            if (result == MessageBoxResult.Yes)
-            {
-                try
-                {
-                    _repository.ExcluirProjeto(projeto.id_projeto);
-                    Projetos.Remove(projeto);
-                    AtualizarIndicadores();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Erro ao excluir: {ex.Message}", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Carrega a estrutura de dados profunda do projeto selecionado e aciona a navegação da janela principal para a tela de edição.
-        /// </summary>
-        private async void ExecutarEdicao(Projeto projeto)
-        {
-            if (projeto == null) return;
+            if (orcamento == null) return;
 
             try
             {
                 IsLoading = true;
 
-                var projetoCompleto = await _repository.CarregarProjetoCompleto(projeto.id_projeto);
+                var (completo, itens) = await _repository.ObterPorIdAsync(orcamento.Id);
 
-                if (projetoCompleto != null)
+                if (completo == null)
                 {
-                    var mainWindow = Application.Current.Windows.OfType<magal.MainWindow>().FirstOrDefault();
-                    mainWindow?.IrParaEdicao(projetoCompleto);
+                    MessageBox.Show("Não foi possível localizar este orçamento.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
                 }
-                else
-                {
-                    MessageBox.Show("Não foi possível carregar os detalhes deste projeto.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+
+                var mainWindow = Application.Current.Windows.OfType<magal.MainWindow>().FirstOrDefault();
+                mainWindow?.AbrirOrcamentoParaEdicao(completo, itens);
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao carregar edição: {ex.Message}", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Erro ao reabrir orçamento: " + ex.Message, "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
-
-        #endregion
     }
 }
