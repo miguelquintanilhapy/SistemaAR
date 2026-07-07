@@ -55,15 +55,13 @@ namespace magal.ViewModels
 
         public RelayCommand AdicionarItemCommand { get; }
         public RelayCommand DeletarItemCommand { get; }
-        public RelayCommand SalvarOrcamentoCommand { get; }
         public RelayCommand GerarPdfCommand { get; }
 
         public OrcamentoViewModel()
         {
             AdicionarItemCommand = new RelayCommand(_ => AdicionarItem());
             DeletarItemCommand = new RelayCommand(param => DeletarItem(param as ItemOrcamento));
-            SalvarOrcamentoCommand = new RelayCommand(async _ => await SalvarOrcamentoAsync());
-            GerarPdfCommand = new RelayCommand(async _ => await GerarPdfAsync());
+            GerarPdfCommand = new RelayCommand(async _ => await SalvarEGerarPdfAsync());
 
             NovoOrcamento();
         }
@@ -126,7 +124,7 @@ namespace magal.ViewModels
             OrcamentoAtual.ValorTotal = ItensOrcamento.Sum(i => i.ValorUnitario);
         }
 
-        private async Task SalvarOrcamentoAsync()
+        private async Task SalvarEGerarPdfAsync()
         {
             if (string.IsNullOrWhiteSpace(OrcamentoAtual.ClienteNome))
             {
@@ -137,38 +135,6 @@ namespace magal.ViewModels
             if (!ItensOrcamento.Any())
             {
                 MessageBox.Show("Adicione ao menos uma peça ou serviço ao orçamento.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
-
-            try
-            {
-                _processando = true;
-                IsLoading = true;
-                OnPropertyChanged(nameof(BotaoAtivo));
-
-                AtualizarTotal();
-                int id = await _repository.SalvarCompletoAsync(OrcamentoAtual, ItensOrcamento.ToList());
-                OrcamentoAtual.Id = id;
-
-                MessageBox.Show("Orçamento salvo com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Erro ao salvar orçamento: " + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            finally
-            {
-                _processando = false;
-                IsLoading = false;
-                OnPropertyChanged(nameof(BotaoAtivo));
-            }
-        }
-
-        private async Task GerarPdfAsync()
-        {
-            if (!ItensOrcamento.Any())
-            {
-                MessageBox.Show("Adicione ao menos uma peça ou serviço antes de gerar o PDF.", "Aviso", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -187,14 +153,17 @@ namespace magal.ViewModels
                 OnPropertyChanged(nameof(BotaoAtivo));
 
                 AtualizarTotal();
+                int id = await _repository.SalvarCompletoAsync(OrcamentoAtual, ItensOrcamento.ToList());
+                OrcamentoAtual.Id = id;
+
                 var itens = ItensOrcamento.ToList();
                 await Task.Run(() => new PdfService().GerarOrcamentoPdf(OrcamentoAtual, itens, sfd.FileName));
 
-                MessageBox.Show("PDF gerado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Orçamento salvo e PDF gerado com sucesso!", "Sucesso", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Erro ao gerar PDF: " + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Erro ao salvar orçamento ou gerar PDF: " + ex.Message, "Erro", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
